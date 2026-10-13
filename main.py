@@ -592,7 +592,7 @@ def enforce_bot_signature(token):
             return False
 
         bot_username = resp['result'].get('username', 'Bot')
-        new_name = f"{bot_username} | ZeroFlux"
+        new_name = f"{bot_username} | FREEBOTHOSTİNGSERVER"
 
         # İsmi güncelle
         try:
@@ -603,7 +603,7 @@ def enforce_bot_signature(token):
 
         # Bio
         description = (
-            f"🚀 Bu bot ZeroFlux Hosting tarafından barındırılıyor.\n"
+            f"🚀 Bu bot FREEBOTHOSTİNGSERVER tarafından barındırılıyor.\n"
             f"📢 Kanal: {FORCED_CHANNEL}\n"
             f"💬 Destek: {SUPPORT_USERNAME}"
         )
@@ -611,7 +611,7 @@ def enforce_bot_signature(token):
             requests.post(f"https://api.telegram.org/bot{token}/setMyDescription",
                           data={'description': description[:512]}, timeout=10)
             requests.post(f"https://api.telegram.org/bot{token}/setMyShortDescription",
-                          data={'short_description': f"ZeroFlux Hosting | {SUPPORT_USERNAME}"[:120]}, timeout=10)
+                          data={'short_description': f"freebotHostingServer Hosting | {SUPPORT_USERNAME}"[:120]}, timeout=10)
         except Exception as e:
             logger.error(f"setMyDescription hatası: {e}")
 
@@ -794,9 +794,9 @@ def run_script(script_path, script_owner_id, user_folder, file_name, message_obj
 
             # Ortam değişkenlerine zorunlu bilgileri ekle
             env_vars = os.environ.copy()
-            env_vars['ZEROFLUX_CHANNEL'] = FORCED_CHANNEL
-            env_vars['ZEROFLUX_SUPPORT'] = SUPPORT_USERNAME
-            env_vars['ZEROFLUX_HOST'] = 'ZeroFlux Hosting'
+            env_vars['freebothostingserver_CHANNEL'] = FORCED_CHANNEL
+            env_vars['freebothostingserver_SUPPORT'] = SUPPORT_USERNAME
+            env_vars['freebothostingserver_HOST'] = 'freebothostingserver Hosting'
 
             process = subprocess.Popen(
                 [sys.executable, script_path], cwd=user_folder,
