@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: freebotHostingServer
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python main.py
+    envVars:
+      - key: BOT_TOKEN
+        value: 8713603435:AAHSgug0Xwx4NOj47HX8UF6MzPxaFU3Mrnw
+      - key: OWNER_ID
+        value: 8818660111
+      - key: ADMIN_ID
+        value: 8818660111
+      - key: YOUR_USERNAME
+        value: "@ibenler"
+      - key: PYTHON_VERSION
+        value: 3.11.9
+    disk:
+      name: freebotHostingServer-data
+      mountPath: /opt/render/project/src/inf
+      sizeGB: 1
