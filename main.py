@@ -49,20 +49,20 @@ TRANSLATIONS = {
         'username': "Kullanıcı Adın",
         'your_status': "Durumun",
         'files_uploaded': "Yüklenen Dosyalar",
-        'upload_file': "Dosya Yükle",
-        'check_files': "Dosyaları Kontrol Et",
-        'bot_speed': "Bot Hızı",
-        'statistics': "İstatistikler",
-        'updates_channel': "Güncelleme Kanalı",
-        'contact_owner': "Sahibe Ulaş",
-        'uptime': "Çalışma Süresi",
-        'admin_panel': "Admin Paneli",
-        'broadcast': "Duyuru",
-        'subscriptions': "Abonelikler",
-        'lock_bot': "Botu Kilitle",
-        'unlock_bot': "Botun Kilidini Aç",
+        'upload_file': "📤 Dosya Yükle",
+        'check_files': "📂 Dosyaları Kontrol Et",
+        'bot_speed': "⚡ Bot Hızı",
+        'statistics': "📊 İstatistikler",
+        'updates_channel': "📢 Güncelleme Kanalı",
+        'contact_owner': "📞 Sahibe Ulaş",
+        'uptime': "⏱ Çalışma Süresi",
+        'admin_panel': "👑 Admin Paneli",
+        'broadcast': "📢 Duyuru",
+        'subscriptions': "💳 Abonelikler",
+        'lock_bot': "🔒 Botu Kilitle",
+        'unlock_bot': "🔓 Botun Kilidini Aç",
         'run_all': "Tüm Kodları Çalıştır",
-        'ai': "MPX AI",
+        'ai': "🤖 MPX AI",
         'bot_locked': "Bot admin tarafından kilitlendi. Daha sonra tekrar deneyin.",
         'file_limit_reached': "Dosya limitine ulaşıldı ({current}/{limit}). Önce dosya silin.",
         'send_file': "Python (.py) veya ZIP (.zip) dosyanı gönder.",
@@ -114,20 +114,20 @@ TRANSLATIONS = {
         'username': "Username",
         'your_status': "Your Status",
         'files_uploaded': "Files Uploaded",
-        'upload_file': "Upload File",
-        'check_files': "Check Files",
-        'bot_speed': "Bot Speed",
-        'statistics': "Statistics",
-        'updates_channel': "Updates Channel",
-        'contact_owner': "Contact Owner",
-        'uptime': "Uptime",
-        'admin_panel': "Admin Panel",
-        'broadcast': "Broadcast",
-        'subscriptions': "Subscriptions",
-        'lock_bot': "Lock Bot",
-        'unlock_bot': "Unlock Bot",
+        'upload_file': "📤 Upload File",
+        'check_files': "📂 Check Files",
+        'bot_speed': "⚡ Bot Speed",
+        'statistics': "📊 Statistics",
+        'updates_channel': "📢 Updates Channel",
+        'contact_owner': "📞 Contact Owner",
+        'uptime': "⏱ Uptime",
+        'admin_panel': "👑 Admin Panel",
+        'broadcast': "📢 Broadcast",
+        'subscriptions': "💳 Subscriptions",
+        'lock_bot': "🔒 Lock Bot",
+        'unlock_bot': "🔓 Unlock Bot",
         'run_all': "Run All Code",
-        'ai': "MPX AI",
+        'ai': "🤖 MPX AI",
         'bot_locked': "Bot locked by admin. Try later.",
         'file_limit_reached': "File limit reached ({current}/{limit}). Delete files first.",
         'send_file': "Send your Python (.py) or ZIP (.zip) file.",
@@ -179,20 +179,20 @@ TRANSLATIONS = {
         'username': "Имя пользователя",
         'your_status': "Ваш статус",
         'files_uploaded': "Загружено файлов",
-        'upload_file': "Загрузить файл",
-        'check_files': "Проверить файлы",
-        'bot_speed': "Скорость бота",
-        'statistics': "Статистика",
-        'updates_channel': "Канал обновлений",
-        'contact_owner': "Связаться с владельцем",
-        'uptime': "Время работы",
-        'admin_panel': "Админ-панель",
-        'broadcast': "Рассылка",
-        'subscriptions': "Подписки",
-        'lock_bot': "Заблокировать",
-        'unlock_bot': "Разблокировать",
+        'upload_file': "📤 Загрузить файл",
+        'check_files': "📂 Проверить файлы",
+        'bot_speed': "⚡ Скорость бота",
+        'statistics': "📊 Статистика",
+        'updates_channel': "📢 Канал обновлений",
+        'contact_owner': "📞 Связаться с владельцем",
+        'uptime': "⏱ Время работы",
+        'admin_panel': "👑 Админ-панель",
+        'broadcast': "📢 Рассылка",
+        'subscriptions': "💳 Подписки",
+        'lock_bot': "🔒 Заблокировать",
+        'unlock_bot': "🔓 Разблокировать",
         'run_all': "Запустить всё",
-        'ai': "MPX AI",
+        'ai': "🤖 MPX AI",
         'bot_locked': "Бот заблокирован админом.",
         'file_limit_reached': "Достигнут лимит ({current}/{limit}).",
         'send_file': "Отправьте файл .py или .zip.",
@@ -244,20 +244,20 @@ TRANSLATIONS = {
         'username': "اسم المستخدم",
         'your_status': "حالتك",
         'files_uploaded': "الملفات المرفوعة",
-        'upload_file': "رفع ملف",
-        'check_files': "فحص الملفات",
-        'bot_speed': "سرعة البوت",
-        'statistics': "الإحصائيات",
-        'updates_channel': "قناة التحديثات",
-        'contact_owner': "اتصل بالمالك",
-        'uptime': "مدة التشغيل",
-        'admin_panel': "لوحة الإدارة",
-        'broadcast': "إذاعة",
-        'subscriptions': "الاشتراكات",
-        'lock_bot': "قفل البوت",
-        'unlock_bot': "فتح البوت",
+        'upload_file': "📤 رفع ملف",
+        'check_files': "📂 فحص الملفات",
+        'bot_speed': "⚡ سرعة البوت",
+        'statistics': "📊 الإحصائيات",
+        'updates_channel': "📢 قناة التحديثات",
+        'contact_owner': "📞 اتصل بالمالك",
+        'uptime': "⏱ مدة التشغيل",
+        'admin_panel': "👑 لوحة الإدارة",
+        'broadcast': "📢 إذاعة",
+        'subscriptions': "💳 الاشتراكات",
+        'lock_bot': "🔒 قفل البوت",
+        'unlock_bot': "🔓 فتح البوت",
         'run_all': "تشغيل الكل",
-        'ai': "MPX AI",
+        'ai': "🤖 MPX AI",
         'bot_locked': "البوت مقفل بواسطة الإدارة.",
         'file_limit_reached': "تم الوصول للحد ({current}/{limit}).",
         'send_file': "أرسل ملف .py أو .zip.",
@@ -309,20 +309,20 @@ TRANSLATIONS = {
         'username': "उपयोगकर्ता नाम",
         'your_status': "आपकी स्थिति",
         'files_uploaded': "अपलोड की गई फ़ाइलें",
-        'upload_file': "फ़ाइल अपलोड करें",
-        'check_files': "फ़ाइलें जाँचें",
-        'bot_speed': "बॉट गति",
-        'statistics': "आंकड़े",
-        'updates_channel': "अपडेट चैनल",
-        'contact_owner': "मालिक से संपर्क",
-        'uptime': "अपटाइम",
-        'admin_panel': "एडमिन पैनल",
-        'broadcast': "ब्रॉडकास्ट",
-        'subscriptions': "सदस्यताएँ",
-        'lock_bot': "बॉट लॉक",
-        'unlock_bot': "अनलॉक",
+        'upload_file': "📤 फ़ाइल अपलोड करें",
+        'check_files': "📂 फ़ाइलें जाँचें",
+        'bot_speed': "⚡ बॉट गति",
+        'statistics': "📊 आंकड़े",
+        'updates_channel': "📢 अपडेट चैनल",
+        'contact_owner': "📞 मालिक से संपर्क",
+        'uptime': "⏱ अपटाइम",
+        'admin_panel': "👑 एडमिन पैनल",
+        'broadcast': "📢 ब्रॉडकास्ट",
+        'subscriptions': "💳 सदस्यताएँ",
+        'lock_bot': "🔒 बॉट लॉक",
+        'unlock_bot': "🔓 अनलॉक",
         'run_all': "सभी चलाएँ",
-        'ai': "MPX AI",
+        'ai': "🤖 MPX AI",
         'bot_locked': "बॉट एडमिन द्वारा लॉक।",
         'file_limit_reached': "सीमा पूरी ({current}/{limit})।",
         'send_file': "अपनी .py या .zip फ़ाइल भेजें।",
@@ -385,7 +385,6 @@ ADMIN_ID = int(os.environ.get('ADMIN_ID', '8818660111'))
 YOUR_USERNAME = os.environ.get('YOUR_USERNAME', '@ibenler')
 UPDATE_CHANNEL = 'https://t.me/freebotHostingServer'
 FORCED_CHANNEL = 'https://t.me/freebotHostingServer'
-FORCED_CHANNEL_USERNAME = 'freebotHostingServer'
 SUPPORT_USERNAME = '@ibenler'
 
 A4F_API_URL = "https://samuraiapi.in/v1/chat/completions"
@@ -399,13 +398,13 @@ DATABASE_PATH = os.path.join(IROTECH_DIR, 'bot_data.db')
 
 FREE_USER_LIMIT = 6
 SUBSCRIBED_USER_LIMIT = 23
-ADMIN_LIMIT =99
+ADMIN_LIMIT = 99
 OWNER_LIMIT = float('inf')
 
 os.makedirs(UPLOAD_BOTS_DIR, exist_ok=True)
 os.makedirs(IROTECH_DIR, exist_ok=True)
 
-bot = telebot.TeleBot(TOKEN)
+bot = telebot.TeleBot(TOKEN, parse_mode=None)
 
 bot_scripts = {}
 user_subscriptions = {}
@@ -414,8 +413,7 @@ active_users = set()
 admin_ids = {ADMIN_ID, OWNER_ID}
 bot_locked = False
 
-# Onay bekleyen dosyalar
-pending_approvals = {}  # {approval_id: {info}}
+pending_approvals = {}
 approval_counter = [0]
 approvals_lock = threading.Lock()
 
@@ -489,7 +487,7 @@ def load_data():
 init_db()
 load_data()
 
-# ================== YARDIMCI FONKSİYONLAR ==================
+# ================== YARDIMCI ==================
 def get_user_folder(user_id):
     user_folder = os.path.join(UPLOAD_BOTS_DIR, str(user_id))
     os.makedirs(user_folder, exist_ok=True)
@@ -513,10 +511,9 @@ def is_bot_running(script_owner_id, file_name):
             proc = psutil.Process(script_info['process'].pid)
             is_running = proc.is_running() and proc.status() != psutil.STATUS_ZOMBIE
             if not is_running:
-                logger.warning(f"{script_key} zombi. Temizleniyor.")
                 if 'log_file' in script_info and hasattr(script_info['log_file'], 'close') and not script_info['log_file'].closed:
                     try: script_info['log_file'].close()
-                    except Exception as log_e: logger.error(f"Log kapatma hatası: {log_e}")
+                    except Exception: pass
                 if script_key in bot_scripts: del bot_scripts[script_key]
             return is_running
         except psutil.NoSuchProcess:
@@ -536,7 +533,7 @@ def kill_process_tree(process_info):
     try:
         if 'log_file' in process_info and hasattr(process_info['log_file'], 'close') and not process_info['log_file'].closed:
             try: process_info['log_file'].close()
-            except Exception as log_e: logger.error(f"Log kapatma: {log_e}")
+            except Exception: pass
 
         process = process_info.get('process')
         if process and hasattr(process, 'pid'):
@@ -565,11 +562,10 @@ def kill_process_tree(process_info):
                         except Exception: pass
                 except psutil.NoSuchProcess: pass
     except Exception as e:
-        logger.error(f"Process ağacı öldürme hatası {pid}: {e}", exc_info=True)
+        logger.error(f"Process öldürme hatası {pid}: {e}", exc_info=True)
 
-# ================== BOT TOKEN ÇIKARMA VE İMZALAMA ==================
+# ================== TOKEN ÇIKARMA ==================
 def extract_bot_tokens(file_path):
-    """Verilen .py dosyasından telegram bot token'larını çıkarır."""
     tokens = []
     try:
         with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
@@ -584,24 +580,17 @@ def extract_bot_tokens(file_path):
     return tokens
 
 def enforce_bot_signature(token):
-    """Botun adını ve bio'sunu güncelle: zorunlu kanal + destek."""
     try:
         resp = requests.get(f"https://api.telegram.org/bot{token}/getMe", timeout=10).json()
         if not resp.get('ok'):
-            logger.warning(f"Token geçersiz: {token[:15]}...")
             return False
-
         bot_username = resp['result'].get('username', 'Bot')
         new_name = f"{bot_username} | FREEBOTHOSTİNGSERVER"
-
-        # İsmi güncelle
         try:
             requests.post(f"https://api.telegram.org/bot{token}/setMyName",
                           data={'name': new_name[:64]}, timeout=10)
-        except Exception as e:
-            logger.error(f"setMyName hatası: {e}")
+        except Exception: pass
 
-        # Bio
         description = (
             f"🚀 Bu bot FREEBOTHOSTİNGSERVER tarafından barındırılıyor.\n"
             f"📢 Kanal: {FORCED_CHANNEL}\n"
@@ -611,21 +600,8 @@ def enforce_bot_signature(token):
             requests.post(f"https://api.telegram.org/bot{token}/setMyDescription",
                           data={'description': description[:512]}, timeout=10)
             requests.post(f"https://api.telegram.org/bot{token}/setMyShortDescription",
-                          data={'short_description': f"freebotHostingServer Hosting | {SUPPORT_USERNAME}"[:120]}, timeout=10)
-        except Exception as e:
-            logger.error(f"setMyDescription hatası: {e}")
-
-        # Bot komutlarını güncelle (opsiyonel)
-        try:
-            commands = json.dumps([
-                {"command": "start", "description": "Başlat"},
-                {"command": "help", "description": "Yardım"},
-            ])
-            requests.post(f"https://api.telegram.org/bot{token}/setMyCommands",
-                          data={'commands': commands}, timeout=10)
+                          data={'short_description': f"FREEBOTHOSTİNGSERVER | {SUPPORT_USERNAME}"[:120]}, timeout=10)
         except Exception: pass
-
-        logger.info(f"Bot imzası güncellendi: {bot_username}")
         return True
     except Exception as e:
         logger.error(f"enforce_bot_signature hatası: {e}", exc_info=True)
@@ -699,7 +675,7 @@ def run_script(script_path, script_owner_id, user_folder, file_name, message_obj
     if attempt > max_attempts:
         try:
             bot.send_message(message_obj_for_reply.chat.id,
-                           f"❌ '{file_name}' {max_attempts} denemede çalıştırılamadı. Logları kontrol et.")
+                           f"❌ '{file_name}' {max_attempts} denemede çalıştırılamadı.")
         except Exception: pass
         return
 
@@ -762,7 +738,7 @@ def run_script(script_path, script_owner_id, user_folder, file_name, message_obj
             except FileNotFoundError:
                 try:
                     bot.send_message(message_obj_for_reply.chat.id,
-                                   f"❌ Hata: Python yorumlayıcısı '{sys.executable}' bulunamadı.")
+                                   f"❌ Hata: Python yorumlayıcısı bulunamadı.")
                 except Exception: pass
                 return
             except Exception as e:
@@ -775,7 +751,6 @@ def run_script(script_path, script_owner_id, user_folder, file_name, message_obj
                 if check_proc and check_proc.poll() is None:
                     check_proc.kill(); check_proc.communicate()
 
-        # Uzun süreli çalıştırma
         log_file_path = os.path.join(user_folder, f"{os.path.splitext(file_name)[0]}.log")
         log_file = None; process = None
         try:
@@ -792,11 +767,10 @@ def run_script(script_path, script_owner_id, user_folder, file_name, message_obj
                 startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
                 startupinfo.wShowWindow = subprocess.SW_HIDE
 
-            # Ortam değişkenlerine zorunlu bilgileri ekle
             env_vars = os.environ.copy()
-            env_vars['freebothostingserver_CHANNEL'] = FORCED_CHANNEL
-            env_vars['freebothostingserver_SUPPORT'] = SUPPORT_USERNAME
-            env_vars['freebothostingserver_HOST'] = 'freebothostingserver Hosting'
+            env_vars['FREEBOTHOST_CHANNEL'] = FORCED_CHANNEL
+            env_vars['FREEBOTHOST_SUPPORT'] = SUPPORT_USERNAME
+            env_vars['FREEBOTHOST_HOST'] = 'FREEBOTHOSTİNGSERVER'
 
             process = subprocess.Popen(
                 [sys.executable, script_path], cwd=user_folder,
@@ -816,7 +790,6 @@ def run_script(script_path, script_owner_id, user_folder, file_name, message_obj
                                f"✅ Python script '{file_name}' başlatıldı! (PID: {process.pid})")
             except Exception: pass
 
-            # Token çıkarma + bot imzası zorlama
             try:
                 tokens = extract_bot_tokens(script_path)
                 for tk in tokens:
@@ -948,7 +921,7 @@ def save_user_lang(user_id, lang):
         except Exception as e: logger.error(f"Dil kaydetme hatası: {e}")
         finally: conn.close()
 
-# ================== MENÜLER ==================
+# ================== MENÜLER (SADECE INLINE) ==================
 def create_main_menu_inline(user_id):
     markup = types.InlineKeyboardMarkup(row_width=2)
     buttons = [
@@ -989,27 +962,6 @@ def create_main_menu_inline(user_id):
         markup.add(buttons[5], buttons[6])
         markup.add(buttons[7], buttons[8])
 
-    return markup
-
-def create_reply_keyboard_main_menu(user_id):
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
-    if user_id in admin_ids:
-        rows = [
-            [t(user_id, 'updates_channel'), t(user_id, 'check_files')],
-            [t(user_id, 'upload_file'), t(user_id, 'statistics')],
-            [t(user_id, 'bot_speed'), t(user_id, 'subscriptions')],
-            [t(user_id, 'broadcast'), t(user_id, 'admin_panel')],
-            [t(user_id, 'contact_owner'), t(user_id, 'uptime')],
-        ]
-    else:
-        rows = [
-            [t(user_id, 'updates_channel'), t(user_id, 'uptime')],
-            [t(user_id, 'upload_file'), t(user_id, 'check_files')],
-            [t(user_id, 'bot_speed'), t(user_id, 'statistics')],
-            [t(user_id, 'contact_owner'), t(user_id, 'ai')],
-        ]
-    for row in rows:
-        markup.add(*[types.KeyboardButton(text) for text in row])
     return markup
 
 def create_control_buttons(script_owner_id, file_name, is_running=True, requester_id=None):
@@ -1072,7 +1024,6 @@ def create_lang_menu():
 
 # ================== ADMIN ONAY SİSTEMİ ==================
 def request_approval(user_id, file_path, file_name, file_type, message):
-    """Python ve ZIP dosyaları için admin onayı ister."""
     with approvals_lock:
         approval_counter[0] += 1
         approval_id = approval_counter[0]
@@ -1133,8 +1084,6 @@ def handle_approve(call):
         info = pending_approvals.get(approval_id)
         if not info:
             bot.answer_callback_query(call.id, t(call.from_user.id, 'already_processed'), show_alert=True)
-            try: bot.edit_message_reply_markup(call.message.chat.id, call.message.message_id, reply_markup=None)
-            except Exception: pass
             return
         del pending_approvals[approval_id]
 
@@ -1146,7 +1095,6 @@ def handle_approve(call):
     user_folder = info['user_folder']
     user_chat_id = info['chat_id']
 
-    # Buton temizle
     try:
         bot.edit_message_caption(
             caption=f"✅ <b>ONAYLANDI</b> - Dosya: <code>{file_name}</code>\nKullanıcı: <code>{user_id}</code>",
@@ -1156,12 +1104,10 @@ def handle_approve(call):
         try: bot.edit_message_reply_markup(call.message.chat.id, call.message.message_id, reply_markup=None)
         except Exception: pass
 
-    # Kullanıcıya bildir
     try:
         bot.send_message(user_chat_id, t(user_id, 'approved'))
     except Exception: pass
 
-    # Script'i çalıştır
     class FakeMessage:
         def __init__(self, chat_id):
             self.chat = type('obj', (object,), {'id': chat_id})()
@@ -1183,8 +1129,6 @@ def handle_reject(call):
         info = pending_approvals.get(approval_id)
         if not info:
             bot.answer_callback_query(call.id, t(call.from_user.id, 'already_processed'), show_alert=True)
-            try: bot.edit_message_reply_markup(call.message.chat.id, call.message.message_id, reply_markup=None)
-            except Exception: pass
             return
         del pending_approvals[approval_id]
 
@@ -1194,11 +1138,9 @@ def handle_reject(call):
     file_name = info['file_name']
     user_chat_id = info['chat_id']
 
-    # Dosyayı diskten sil
     try:
         if os.path.exists(file_path):
             os.remove(file_path)
-        # Klasörü de temizle (içi boşsa)
         parent_dir = os.path.dirname(file_path)
         if os.path.isdir(parent_dir) and not os.listdir(parent_dir):
             shutil.rmtree(parent_dir, ignore_errors=True)
@@ -1230,7 +1172,6 @@ def handle_zip_file(downloaded_file_content, file_name_zip, message):
         with open(zip_path, 'wb') as new_file:
             new_file.write(downloaded_file_content)
 
-        # Güvenli çıkarma
         with zipfile.ZipFile(zip_path, 'r') as zip_ref:
             for member in zip_ref.infolist():
                 member_path = os.path.abspath(os.path.join(temp_dir, member.filename))
@@ -1245,7 +1186,6 @@ def handle_zip_file(downloaded_file_content, file_name_zip, message):
         if not py_files and not req_file:
             bot.reply_to(message, "❌ Arşivde `.py` dosyası bulunamadı!"); return
 
-        # requirements.txt varsa yükle
         if req_file:
             req_path = os.path.join(temp_dir, req_file)
             bot.reply_to(message, f"📦 `{req_file}` yükleniyor...")
@@ -1255,11 +1195,10 @@ def handle_zip_file(downloaded_file_content, file_name_zip, message):
                                        encoding='utf-8', errors='ignore', timeout=300)
                 bot.reply_to(message, f"✅ `{req_file}` yüklendi.")
             except subprocess.TimeoutExpired:
-                bot.reply_to(message, f"⏱ `{req_file}` yüklemesi zaman aşımına uğradı, devam ediliyor...")
+                bot.reply_to(message, f"⏱ `{req_file}` zaman aşımı, devam ediliyor...")
             except Exception as e:
                 bot.reply_to(message, f"⚠️ `{req_file}` kısmen yüklenemedi: {str(e)[:200]}")
 
-        # Ana script'i seç
         main_script_name = None
         preferred_py = ['main.py', 'bot.py', 'app.py']
         for p in preferred_py:
@@ -1271,7 +1210,6 @@ def handle_zip_file(downloaded_file_content, file_name_zip, message):
         if not main_script_name:
             bot.reply_to(message, "❌ Ana script belirlenemedi!"); return
 
-        # Temp'ten user_folder'a taşı
         for item_name in os.listdir(temp_dir):
             src_path = os.path.join(temp_dir, item_name)
             dest_path = os.path.join(user_folder, item_name)
@@ -1285,7 +1223,6 @@ def handle_zip_file(downloaded_file_content, file_name_zip, message):
         bot.reply_to(message, f"📦 Arşiv çıkarıldı. Ana script: `{main_script_name}`\nAdmin onayına gönderiliyor...",
                      parse_mode='Markdown')
 
-        # Admin onayı
         request_approval(user_id, main_script_path, main_script_name, 'py', message)
 
     except zipfile.BadZipFile as e:
@@ -1305,7 +1242,7 @@ def _logic_send_welcome(message):
     user_name = message.from_user.first_name
     user_username = message.from_user.username
 
-    logger.info(f"Karşılama: user_id={user_id}, username=@{user_username}")
+    logger.info(f"Karşılama: user_id={user_id}")
 
     if bot_locked and user_id not in admin_ids:
         bot.send_message(chat_id, t(user_id, 'bot_locked'))
@@ -1352,19 +1289,14 @@ def _logic_send_welcome(message):
         f"📢 Zorunlu kanal: {FORCED_CHANNEL}\n"
         f"💬 Destek: {SUPPORT_USERNAME}\n\n"
         f"📌 Sadece `.py` ve `.zip` dosyaları kabul edilir.\n"
-        f"⚠️ Tüm `.py` dosyaları **admin onayı** sonrası çalışır.\n\n"
-        f"Butonları kullan veya komut yaz."
+        f"⚠️ Tüm `.py` dosyaları **admin onayı** sonrası çalışır."
     )
-    main_reply_markup = create_reply_keyboard_main_menu(user_id)
     try:
         if photo_file_id: bot.send_photo(chat_id, photo_file_id)
-        bot.send_message(chat_id, welcome_msg_text, reply_markup=main_reply_markup, parse_mode='Markdown')
+        bot.send_message(chat_id, welcome_msg_text,
+                         reply_markup=create_main_menu_inline(user_id), parse_mode='Markdown')
     except Exception as e:
-        logger.error(f"Karşılama gönderme hatası {user_id}: {e}", exc_info=True)
-        try:
-            bot.send_message(chat_id, welcome_msg_text, reply_markup=main_reply_markup, parse_mode='Markdown')
-        except Exception as fallback_e:
-            logger.error(f"Yedek gönderim hatası {user_id}: {fallback_e}")
+        logger.error(f"Karşılama hatası {user_id}: {e}", exc_info=True)
 
 def _logic_updates_channel(message):
     user_id = message.from_user.id
@@ -1392,13 +1324,12 @@ def _logic_check_files(message):
     markup = types.InlineKeyboardMarkup(row_width=1)
     for file_name, file_type in sorted(user_files_list):
         is_running = is_bot_running(user_id, file_name)
-        # Onay bekliyor mu kontrol
         pending = any(info['user_id'] == user_id and info['file_name'] == file_name
                       for info in pending_approvals.values())
         if pending:
-            status_icon = t(user_id, 'waiting_approval_short')
+            status_icon = "⏳ " + t(user_id, 'waiting_approval_short')
         else:
-            status_icon = t(user_id, 'running') if is_running else t(user_id, 'stopped')
+            status_icon = "🟢 " + t(user_id, 'running') if is_running else "🔴 " + t(user_id, 'stopped')
         btn_text = f"{file_name} ({file_type}) - {status_icon}"
         markup.add(types.InlineKeyboardButton(btn_text, callback_data=f'file_{user_id}_{file_name}'))
     bot.reply_to(message, t(user_id, 'your_files'), reply_markup=markup, parse_mode='Markdown')
@@ -1424,7 +1355,6 @@ def _logic_bot_speed(message):
         bot.edit_message_text(speed_msg, chat_id, wait_msg.message_id)
     except Exception as e:
         logger.error(f"Hız testi hatası: {e}", exc_info=True)
-        bot.edit_message_text("Hız testi hatası.", chat_id, wait_msg.message_id)
 
 def _logic_contact_owner(message):
     user_id = message.from_user.id
@@ -1500,10 +1430,7 @@ def _logic_pending_list(message):
     if not pending_approvals:
         bot.reply_to(message, t(user_id, 'no_pending')); return
 
-    text = t(user_id, 'admin_pending_list') + "\n\n"
-    markup = types.InlineKeyboardMarkup(row_width=1)
-    for aid, info in list(pending_approvals.items())[:10]:
-        text += f"#{aid} - `{info['file_name']}` (User: `{info['user_id']}`)\n"
+    for aid, info in list(pending_approvals.items()):
         row_markup = types.InlineKeyboardMarkup(row_width=2)
         row_markup.row(
             types.InlineKeyboardButton(f"✅ #{aid} Onayla", callback_data=f'approve_{aid}'),
@@ -1514,7 +1441,7 @@ def _logic_pending_list(message):
                              reply_markup=row_markup, parse_mode='Markdown')
         except Exception as e:
             logger.error(f"Bekleyen onay gönderim hatası: {e}")
-    bot.reply_to(message, text, parse_mode='Markdown')
+    bot.reply_to(message, f"{t(user_id, 'admin_pending_list')} {len(pending_approvals)} adet")
 
 def _logic_run_all_scripts(message_or_call):
     if isinstance(message_or_call, telebot.types.Message):
@@ -1544,7 +1471,6 @@ def _logic_run_all_scripts(message_or_call):
         for file_name, file_type in files_for_user:
             if file_type != 'py': continue
             if not is_bot_running(target_user_id, file_name):
-                # Onay bekliyor mu?
                 pending = any(info['user_id'] == target_user_id and info['file_name'] == file_name
                               for info in pending_approvals.values())
                 if pending:
@@ -1577,7 +1503,7 @@ def get_uptime():
     minutes, seconds = divmod(remainder, 60)
     return f"{days}g {hours}s {minutes}d {seconds}sn"
 
-# ================== KOMUT İŞLEYİCİLER ==================
+# ================== KOMUTLAR ==================
 @bot.message_handler(commands=['mpx'])
 def handle_mpx_command(message):
     user_id = message.from_user.id
@@ -1628,67 +1554,7 @@ def ping(message):
                           message.chat.id, msg.message_id)
 
 @bot.message_handler(commands=['pending', 'bekleyen'])
-def command_pending(message):
-    _logic_pending_list(message)
-
-BUTTON_TEXT_TO_LOGIC = {
-    "📢 Güncelleme Kanalı": _logic_updates_channel,
-    "📢 Updates Channel": _logic_updates_channel,
-    "📤 Dosya Yükle": _logic_upload_file,
-    "📤 Upload File": _logic_upload_file,
-    "📂 Dosyaları Kontrol Et": _logic_check_files,
-    "📂 Check Files": _logic_check_files,
-    "⚡ Bot Hızı": _logic_bot_speed,
-    "⚡ Bot Speed": _logic_bot_speed,
-    "📞 Sahibe Ulaş": _logic_contact_owner,
-    "📞 Contact Owner": _logic_contact_owner,
-    "📊 İstatistikler": _logic_statistics,
-    "📊 Statistics": _logic_statistics,
-    "⏱ Çalışma Süresi": _logic_uptime,
-    "⏱ Uptime": _logic_uptime,
-    "💳 Abonelikler": _logic_subscriptions_panel,
-    "💳 Subscriptions": _logic_subscriptions_panel,
-    "📢 Duyuru": _logic_broadcast_init,
-    "📢 Broadcast": _logic_broadcast_init,
-    "🔒 Botu Kilitle": _logic_toggle_lock_bot,
-    "🔒 Lock Bot": _logic_toggle_lock_bot,
-    "🟢 Tüm Kodları Çalıştır": _logic_run_all_scripts,
-    "🟢 Run All Code": _logic_run_all_scripts,
-    "👑 Admin Paneli": _logic_admin_panel,
-    "👑 Admin Panel": _logic_admin_panel,
-    "🤖 MPX AI": lambda m: handle_mpx_command(m),
-    "🤖 MPX Ai": lambda m: handle_mpx_command(m),
-}
-
-@bot.message_handler(func=lambda message: message.text in BUTTON_TEXT_TO_LOGIC)
-def handle_button_text(message):
-    logic_func = BUTTON_TEXT_TO_LOGIC.get(message.text)
-    if logic_func:
-        try: logic_func(message)
-        except Exception as e: logger.error(f"Buton işleme hatası: {e}", exc_info=True)
-
-@bot.message_handler(commands=['updateschannel'])
-def command_updates_channel(message): _logic_updates_channel(message)
-@bot.message_handler(commands=['uploadfile'])
-def command_upload_file(message): _logic_upload_file(message)
-@bot.message_handler(commands=['checkfiles'])
-def command_check_files(message): _logic_check_files(message)
-@bot.message_handler(commands=['botspeed'])
-def command_bot_speed(message): _logic_bot_speed(message)
-@bot.message_handler(commands=['contactowner'])
-def command_contact_owner(message): _logic_contact_owner(message)
-@bot.message_handler(commands=['subscriptions'])
-def command_subscriptions(message): _logic_subscriptions_panel(message)
-@bot.message_handler(commands=['statistics'])
-def command_statistics(message): _logic_statistics(message)
-@bot.message_handler(commands=['broadcast'])
-def command_broadcast(message): _logic_broadcast_init(message)
-@bot.message_handler(commands=['lockbot'])
-def command_lock_bot(message): _logic_toggle_lock_bot(message)
-@bot.message_handler(commands=['adminpanel'])
-def command_admin_panel(message): _logic_admin_panel(message)
-@bot.message_handler(commands=['runningallcode'])
-def command_run_all_code(message): _logic_run_all_scripts(message)
+def command_pending(message): _logic_pending_list(message)
 
 # ================== DOSYA YÜKLEME ==================
 @bot.message_handler(content_types=['document'])
@@ -1712,7 +1578,6 @@ def handle_file_upload_doc(message):
         bot.reply_to(message, "❌ Dosya adı yok."); return
 
     file_ext = os.path.splitext(file_name)[1].lower()
-    # SADECE .py ve .zip kabul
     if file_ext not in ['.py', '.zip']:
         bot.reply_to(message, t(user_id, 'unsupported_type')); return
 
@@ -1737,19 +1602,16 @@ def handle_file_upload_doc(message):
         if file_ext == '.zip':
             handle_zip_file(downloaded_file_content, file_name, message)
         else:
-            # .py dosyası
             file_path = os.path.join(user_folder, file_name)
             with open(file_path, 'wb') as f:
                 f.write(downloaded_file_content)
             save_user_file(user_id, file_name, 'py')
-
-            # Admin onayı gerekli
             request_approval(user_id, file_path, file_name, 'py', message)
 
     except telebot.apihelper.ApiTelegramException as e:
         logger.error(f"TG API hatası: {e}", exc_info=True)
         if "file is too big" in str(e).lower():
-            bot.reply_to(message, "❌ Telegram API Hatası: Dosya çok büyük (~20MB).")
+            bot.reply_to(message, "❌ Dosya çok büyük (~20MB).")
         else:
             bot.reply_to(message, f"❌ Telegram API Hatası: {str(e)}")
     except Exception as e:
@@ -1841,7 +1703,7 @@ def set_lang_callback(call):
         bot.edit_message_text(welcome_msg_text, chat_id, call.message.message_id,
                               reply_markup=create_main_menu_inline(user_id), parse_mode='Markdown')
     except Exception as e:
-        logger.error(f"Ana menü güncelleme hatası: {e}")
+        logger.error(f"Dil menü güncelleme hatası: {e}")
 
 def admin_required_callback(call, func_to_run):
     if call.from_user.id not in admin_ids:
@@ -1870,11 +1732,6 @@ def check_files_callback(call):
     user_files_list = user_files.get(user_id, [])
     if not user_files_list:
         bot.answer_callback_query(call.id, t(user_id, 'no_files'), show_alert=True)
-        try:
-            markup = types.InlineKeyboardMarkup()
-            markup.add(types.InlineKeyboardButton("🔙 " + t(user_id, 'back_to_main'), callback_data='back_to_main'))
-            bot.edit_message_text(t(user_id, 'no_files'), chat_id, call.message.message_id, reply_markup=markup)
-        except Exception: pass
         return
     bot.answer_callback_query(call.id)
     markup = types.InlineKeyboardMarkup(row_width=1)
@@ -1904,13 +1761,11 @@ def file_control_callback(call):
         requesting_user_id = call.from_user.id
 
         if not (requesting_user_id == script_owner_id or requesting_user_id in admin_ids):
-            bot.answer_callback_query(call.id, t(requesting_user_id, 'permission_denied'), show_alert=True)
-            check_files_callback(call); return
+            bot.answer_callback_query(call.id, t(requesting_user_id, 'permission_denied'), show_alert=True); return
 
         user_files_list = user_files.get(script_owner_id, [])
         if not any(f[0] == file_name for f in user_files_list):
-            bot.answer_callback_query(call.id, t(requesting_user_id, 'file_not_found'), show_alert=True)
-            check_files_callback(call); return
+            bot.answer_callback_query(call.id, t(requesting_user_id, 'file_not_found'), show_alert=True); return
 
         bot.answer_callback_query(call.id)
         is_running = is_bot_running(script_owner_id, file_name)
@@ -1922,7 +1777,6 @@ def file_control_callback(call):
             status_text = t(requesting_user_id, 'running') if is_running else t(requesting_user_id, 'stopped')
         file_type = next((f[1] for f in user_files_list if f[0] == file_name), '?')
 
-        # Onay bekliyorsa start butonu gösterme
         if pending:
             markup = types.InlineKeyboardMarkup(row_width=2)
             markup.row(
@@ -1956,7 +1810,6 @@ def start_bot_callback(call):
         if not (requesting_user_id == script_owner_id or requesting_user_id in admin_ids):
             bot.answer_callback_query(call.id, t(requesting_user_id, 'permission_denied'), show_alert=True); return
 
-        # Onay bekliyor mu?
         if any(info['user_id'] == script_owner_id and info['file_name'] == file_name
                for info in pending_approvals.values()):
             bot.answer_callback_query(call.id, "⏳ Bu dosya admin onayı bekliyor.", show_alert=True); return
@@ -1971,18 +1824,13 @@ def start_bot_callback(call):
         file_path = os.path.join(user_folder, file_name)
 
         if not os.path.exists(file_path):
-            bot.answer_callback_query(call.id, f"Hata: `{file_name}` kayıp! Yeniden yükle.", show_alert=True)
+            bot.answer_callback_query(call.id, f"Hata: `{file_name}` kayıp!", show_alert=True)
             remove_user_file_db(script_owner_id, file_name); return
 
         if is_bot_running(script_owner_id, file_name):
             bot.answer_callback_query(call.id, f"'{file_name}' zaten çalışıyor.", show_alert=True); return
 
         bot.answer_callback_query(call.id, f"'{file_name}' başlatılıyor...")
-
-        # KRİTİK: Sadece admin veya sahip, kullanıcı kendi .py'sini başlatamaz (onay sonrası admin başlatır)
-        # Ancak kendi kullanıcı onaylanmışsa tekrar başlatabilir.
-        # Onay kontrolü: pending'de yok + is_running değil + daha önce onaylanmış (user_files'da var).
-        # Basitçe: pending yoksa başlatılabilir.
 
         threading.Thread(target=run_script,
                          args=(file_path, script_owner_id, user_folder, file_name, call.message),
@@ -2052,7 +1900,6 @@ def restart_bot_callback(call):
         if not (requesting_user_id == script_owner_id or requesting_user_id in admin_ids):
             bot.answer_callback_query(call.id, t(requesting_user_id, 'permission_denied'), show_alert=True); return
 
-        # Onay bekliyor mu?
         if any(info['user_id'] == script_owner_id and info['file_name'] == file_name
                for info in pending_approvals.values()):
             bot.answer_callback_query(call.id, "⏳ Bu dosya admin onayı bekliyor.", show_alert=True); return
@@ -2186,7 +2033,6 @@ def speed_callback(call):
     chat_id = call.message.chat.id
     start_cb_ping_time = time.time()
     try:
-        bot.edit_message_text("⚡ Hız test ediliyor...", chat_id, call.message.message_id)
         bot.send_chat_action(chat_id, 'typing')
         response_time = round((time.time() - start_cb_ping_time) * 1000, 2)
         status = "Kilitli değil" if not bot_locked else "Kilitli"
@@ -2285,7 +2131,7 @@ def process_broadcast_message(message):
 
     broadcast_content = message.text
     if not broadcast_content and not (message.photo or message.video):
-        bot.reply_to(message, "Boş mesaj gönderilemez. Metin veya medya gönder ya da /cancel.")
+        bot.reply_to(message, "Boş mesaj gönderilemez. /cancel ile iptal et.")
         return
 
     target_count = len(active_users)
@@ -2393,7 +2239,7 @@ def execute_broadcast(broadcast_text, photo_id, video_id, caption, admin_chat_id
 def admin_panel_callback(call):
     bot.answer_callback_query(call.id)
     try:
-        bot.edit_message_text("👑 Admin Paneli\nAdminleri yönet.", call.message.chat.id,
+        bot.edit_message_text("👑 Admin Paneli", call.message.chat.id,
                               call.message.message_id, reply_markup=create_admin_panel(call.from_user.id))
     except Exception as e: logger.error(f"Admin panel hatası: {e}")
 
@@ -2544,7 +2390,7 @@ def process_check_subscription_id(message):
                     bot.reply_to(message, f"✅ `{sub_user_id_check}` aktif abonelik.\n"
                                           f"Bitiş: {expiry_dt:%Y-%m-%d %H:%M:%S} ({days_left} gün)")
                 else:
-                    bot.reply_to(message, f"⚠️ `{sub_user_id_check}` abonelik süresi dolmuş ({expiry_dt:%Y-%m-%d}).")
+                    bot.reply_to(message, f"⚠️ `{sub_user_id_check}` abonelik süresi dolmuş.")
                     remove_subscription_db(sub_user_id_check)
         else:
             bot.reply_to(message, f"`{sub_user_id_check}` abonelik kaydı yok.")
@@ -2569,15 +2415,10 @@ atexit.register(cleanup)
 if __name__ == '__main__':
     logger.info("=" * 50)
     logger.info("🤖 Bot Başlatılıyor...")
-    logger.info(f"Python: {sys.version.split()[0]}")
-    logger.info(f"Base Dir: {BASE_DIR}")
-    logger.info(f"Upload Dir: {UPLOAD_BOTS_DIR}")
-    logger.info(f"Data Dir: {IROTECH_DIR}")
     logger.info(f"Sahip ID: {OWNER_ID}")
     logger.info(f"Adminler: {admin_ids}")
-    logger.info(f"Zorunlu Kanal: {FORCED_CHANNEL}")
+    logger.info(f"Kanal: {FORCED_CHANNEL}")
     logger.info(f"Destek: {SUPPORT_USERNAME}")
-    logger.info(f"Başlangıç: {BOT_START_TIME}")
     logger.info("=" * 50)
 
     keep_alive()
@@ -2587,14 +2428,14 @@ if __name__ == '__main__':
         try:
             bot.infinity_polling(logger_level=logging.INFO, timeout=60, long_polling_timeout=30)
         except requests.exceptions.ReadTimeout:
-            logger.warning("Polling ReadTimeout. 5s sonra yeniden başlatılıyor...")
+            logger.warning("Polling ReadTimeout. 5s...")
             time.sleep(5)
         except requests.exceptions.ConnectionError as ce:
-            logger.error(f"Bağlantı hatası: {ce}. 15s sonra denenecek...")
+            logger.error(f"Bağlantı hatası: {ce}. 15s...")
             time.sleep(15)
         except Exception as e:
             logger.critical(f"Kritik polling hatası: {e}", exc_info=True)
-            logger.info("30s sonra yeniden başlatılıyor...")
+            logger.info("30s sonra yeniden...")
             time.sleep(30)
         finally:
             time.sleep(1)
