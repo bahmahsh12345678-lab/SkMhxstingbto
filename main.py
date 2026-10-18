@@ -1,3 +1,6 @@
+# =====================================================
+#  🚀 FREEBOTHOSTING SERVER - TAM KOD
+# =====================================================
 import telebot
 import subprocess
 import os
@@ -9,366 +12,76 @@ import time
 from datetime import datetime, timedelta
 import psutil
 import sqlite3
-import json
 import logging
-import signal
 import threading
 import re
 import sys
 import atexit
 import requests
-
+import gc
+import json
 from flask import Flask
-from threading import Thread
 
 app = Flask('')
 
 @app.route('/')
 def home():
-    return "Bot çalışıyor"
+    return "Bot çalışıyor 🚀"
 
 def run_flask():
     port = int(os.environ.get("PORT", 8080))
     app.run(host='0.0.0.0', port=port)
 
 def keep_alive():
-    t = Thread(target=run_flask)
-    t.daemon = True
-    t.start()
-    print("Flask Keep-Alive sunucusu başlatıldı.")
+    Thread(target=run_flask, daemon=True).start()
+    print("Flask Keep-Alive başladı.")
 
 BOT_START_TIME = datetime.now()
 
-# ================== ÇOKLU DİL DESTEĞİ ==================
+# ================== DİL ==================
 USER_LANG = {}
-
 TRANSLATIONS = {
     'tr': {
         'welcome': "Hoş geldin, {name}!",
-        'your_id': "Kullanıcı ID'n",
-        'username': "Kullanıcı Adın",
-        'your_status': "Durumun",
-        'files_uploaded': "Yüklenen Dosyalar",
-        'upload_file': "📤 Dosya Yükle",
-        'check_files': "📂 Dosyaları Kontrol Et",
-        'bot_speed': "⚡ Bot Hızı",
-        'statistics': "📊 İstatistikler",
-        'updates_channel': "📢 Güncelleme Kanalı",
-        'contact_owner': "📞 Sahibe Ulaş",
-        'uptime': "⏱ Çalışma Süresi",
-        'admin_panel': "👑 Admin Paneli",
-        'broadcast': "📢 Duyuru",
-        'subscriptions': "💳 Abonelikler",
-        'lock_bot': "🔒 Botu Kilitle",
-        'unlock_bot': "🔓 Botun Kilidini Aç",
-        'run_all': "Tüm Kodları Çalıştır",
-        'ai': "🤖 MPX AI",
-        'bot_locked': "Bot admin tarafından kilitlendi. Daha sonra tekrar deneyin.",
-        'file_limit_reached': "Dosya limitine ulaşıldı ({current}/{limit}). Önce dosya silin.",
-        'send_file': "Python (.py) veya ZIP (.zip) dosyanı gönder.",
-        'unsupported_type': "Desteklenmeyen tür! Sadece .py ve .zip izin verilir.",
-        'file_too_large': "Dosya çok büyük (Maks: 20 MB).",
-        'no_files': "Dosyaların:\n\n(Henüz dosya yüklenmedi)",
-        'your_files': "Dosyaların:\nYönetmek için tıkla.",
-        'admin_required': "Admin yetkisi gerekli.",
-        'owner_required': "Sahip yetkisi gerekli.",
-        'permission_denied': "Bu dosyayı yönetme iznin yok.",
-        'file_not_found': "Dosya bulunamadı.",
-        'running': "Çalışıyor",
-        'stopped': "Durdu",
-        'start': "Başlat",
-        'stop': "Durdur",
-        'restart': "Yeniden Başlat",
-        'delete': "Sil",
-        'logs': "Loglar",
-        'view_logs': "Logları Gör",
-        'back_to_files': "Dosyalara Dön",
-        'back_to_main': "Ana Menüye Dön",
-        'starting': "Başlatılıyor",
-        'stopping': "Durduruluyor",
-        'deleting': "Siliniyor",
-        'restarting': "Yeniden başlatılıyor",
-        'broadcast_prompt': "Tüm aktif kullanıcılara gönderilecek mesajı yaz.\nİptal için /cancel",
-        'broadcast_confirm': "Duyuruyu Onayla",
-        'broadcast_sent': "Duyuru gönderildi!",
-        'broadcast_cancelled': "Duyuru iptal edildi.",
-        'bot_locked_msg': "Bot kilitlendi.",
-        'bot_unlocked_msg': "Botun kilidi açıldı.",
-        'pending_approval': "⏳ Dosyan admin onayı bekliyor...\nOnaylandığında otomatik başlatılacak.",
-        'approved': "✅ Admin tarafından onaylandı! Bot başlatılıyor...",
-        'rejected': "❌ Admin tarafından reddedildi! Dosya silindi.",
-        'approve': "✅ Onayla",
-        'reject': "❌ Reddet",
-        'new_file_approval': "🔔 YENİ DOSYA ONAYI",
-        'file_approved_admin': "✅ Dosya onaylandı ve başlatıldı.",
-        'file_rejected_admin': "❌ Dosya reddedildi ve silindi.",
-        'already_processed': "Bu dosya zaten işlendi.",
-        'approval_expired': "Bu onay isteği süresi doldu.",
-        'no_pending': "Bekleyen onay yok.",
-        'admin_pending_list': "📋 Bekleyen Onaylar:",
+        'your_id': "Kullanıcı ID'n", 'username': "Kullanıcı Adın",
+        'your_status': "Durumun", 'files_uploaded': "Yüklenen Dosyalar",
+        'upload_file': "📤 Dosya Yükle", 'check_files': "📂 Dosyalarım",
+        'bot_speed': "⚡ Bot Hızı", 'statistics': "📊 İstatistikler",
+        'updates_channel': "📢 Kanal", 'contact_owner': "📞 Destek",
+        'uptime': "⏱ Süre", 'admin_panel': "👑 Admin",
+        'broadcast': "📢 Duyuru", 'subscriptions': "💳 Abonelik",
+        'lock_bot': "🔒 Kilitle", 'unlock_bot': "🔓 Aç",
+        'run_all': "Tümünü Çalıştır", 'ai': "🤖 AI",
+        'bot_locked': "Bot kilitli. Daha sonra tekrar deneyin.",
+        'file_limit_reached': "Limit doldu ({current}/{limit}).",
+        'send_file': "Python (.py) veya ZIP (.zip) gönder.",
+        'unsupported_type': "Sadece .py ve .zip!",
+        'file_too_large': "Çok büyük (Maks: 20 MB).",
+        'no_files': "Dosyan yok.",
+        'your_files': "Dosyaların:", 'admin_required': "Admin gerekli.",
+        'owner_required': "Sahip gerekli.", 'permission_denied': "İzin yok.",
+        'file_not_found': "Bulunamadı.", 'running': "Çalışıyor", 'stopped': "Durdu",
+        'start': "Başlat", 'stop': "Durdur", 'restart': "Yeniden",
+        'delete': "Sil", 'logs': "Loglar", 'view_logs': "Log Gör",
+        'back_to_files': "Geri", 'back_to_main': "Ana Menü",
+        'starting': "Başlıyor", 'stopping': "Duruyor",
+        'deleting': "Siliniyor", 'restarting': "Yeniden",
+        'broadcast_prompt': "Duyuru yaz.\n/cancel iptal.",
+        'broadcast_confirm': "Onayla", 'broadcast_sent': "Gönderildi!",
+        'broadcast_cancelled': "İptal.", 'bot_locked_msg': "Kilitlendi.",
+        'bot_unlocked_msg': "Açıldı.",
+        'pending_approval': "⏳ Dosyan admin onayı bekliyor...",
+        'approved': "✅ Onaylandı! Başlatılıyor...", 'rejected': "❌ Reddedildi.",
+        'approve': "✅ Onayla", 'reject': "❌ Reddet",
+        'new_file_approval': "🔔 YENİ DOSYA",
+        'file_approved_admin': "✅ Onaylandı.", 'file_rejected_admin': "❌ Reddedildi.",
+        'already_processed': "İşlendi.", 'approval_expired': "Süre doldu.",
+        'no_pending': "Bekleyen yok.", 'admin_pending_list': "Bekleyenler:",
         'waiting_approval_short': "Onay Bekliyor",
     },
-    'en': {
-        'welcome': "Welcome, {name}!",
-        'your_id': "Your User ID",
-        'username': "Username",
-        'your_status': "Your Status",
-        'files_uploaded': "Files Uploaded",
-        'upload_file': "📤 Upload File",
-        'check_files': "📂 Check Files",
-        'bot_speed': "⚡ Bot Speed",
-        'statistics': "📊 Statistics",
-        'updates_channel': "📢 Updates Channel",
-        'contact_owner': "📞 Contact Owner",
-        'uptime': "⏱ Uptime",
-        'admin_panel': "👑 Admin Panel",
-        'broadcast': "📢 Broadcast",
-        'subscriptions': "💳 Subscriptions",
-        'lock_bot': "🔒 Lock Bot",
-        'unlock_bot': "🔓 Unlock Bot",
-        'run_all': "Run All Code",
-        'ai': "🤖 MPX AI",
-        'bot_locked': "Bot locked by admin. Try later.",
-        'file_limit_reached': "File limit reached ({current}/{limit}). Delete files first.",
-        'send_file': "Send your Python (.py) or ZIP (.zip) file.",
-        'unsupported_type': "Unsupported type! Only .py and .zip allowed.",
-        'file_too_large': "File too large (Max: 20 MB).",
-        'no_files': "Your files:\n\n(No files uploaded yet)",
-        'your_files': "Your files:\nClick to manage.",
-        'admin_required': "Admin permissions required.",
-        'owner_required': "Owner permissions required.",
-        'permission_denied': "You can only manage your own files.",
-        'file_not_found': "File not found.",
-        'running': "Running",
-        'stopped': "Stopped",
-        'start': "Start",
-        'stop': "Stop",
-        'restart': "Restart",
-        'delete': "Delete",
-        'logs': "Logs",
-        'view_logs': "View Logs",
-        'back_to_files': "Back to Files",
-        'back_to_main': "Back to Main",
-        'starting': "Starting",
-        'stopping': "Stopping",
-        'deleting': "Deleting",
-        'restarting': "Restarting",
-        'broadcast_prompt': "Send message to broadcast to all active users.\n/cancel to abort.",
-        'broadcast_confirm': "Confirm & Send",
-        'broadcast_sent': "Broadcast sent!",
-        'broadcast_cancelled': "Broadcast cancelled.",
-        'bot_locked_msg': "Bot locked.",
-        'bot_unlocked_msg': "Bot unlocked.",
-        'pending_approval': "⏳ Your file is awaiting admin approval...\nWill auto-start once approved.",
-        'approved': "✅ Approved by admin! Starting bot...",
-        'rejected': "❌ Rejected by admin! File deleted.",
-        'approve': "✅ Approve",
-        'reject': "❌ Reject",
-        'new_file_approval': "🔔 NEW FILE APPROVAL",
-        'file_approved_admin': "✅ File approved and started.",
-        'file_rejected_admin': "❌ File rejected and deleted.",
-        'already_processed': "This file was already processed.",
-        'approval_expired': "This approval request expired.",
-        'no_pending': "No pending approvals.",
-        'admin_pending_list': "📋 Pending Approvals:",
-        'waiting_approval_short': "Awaiting Approval",
-    },
-    'ru': {
-        'welcome': "Добро пожаловать, {name}!",
-        'your_id': "Ваш ID",
-        'username': "Имя пользователя",
-        'your_status': "Ваш статус",
-        'files_uploaded': "Загружено файлов",
-        'upload_file': "📤 Загрузить файл",
-        'check_files': "📂 Проверить файлы",
-        'bot_speed': "⚡ Скорость бота",
-        'statistics': "📊 Статистика",
-        'updates_channel': "📢 Канал обновлений",
-        'contact_owner': "📞 Связаться с владельцем",
-        'uptime': "⏱ Время работы",
-        'admin_panel': "👑 Админ-панель",
-        'broadcast': "📢 Рассылка",
-        'subscriptions': "💳 Подписки",
-        'lock_bot': "🔒 Заблокировать",
-        'unlock_bot': "🔓 Разблокировать",
-        'run_all': "Запустить всё",
-        'ai': "🤖 MPX AI",
-        'bot_locked': "Бот заблокирован админом.",
-        'file_limit_reached': "Достигнут лимит ({current}/{limit}).",
-        'send_file': "Отправьте файл .py или .zip.",
-        'unsupported_type': "Неподдерживаемый тип!",
-        'file_too_large': "Файл слишком большой (макс. 20 МБ).",
-        'no_files': "Ваши файлы:\n\n(пусто)",
-        'your_files': "Ваши файлы:",
-        'admin_required': "Требуются права админа.",
-        'owner_required': "Требуются права владельца.",
-        'permission_denied': "Нет прав.",
-        'file_not_found': "Файл не найден.",
-        'running': "Работает",
-        'stopped': "Остановлен",
-        'start': "Запустить",
-        'stop': "Остановить",
-        'restart': "Перезапустить",
-        'delete': "Удалить",
-        'logs': "Логи",
-        'view_logs': "Просмотр логов",
-        'back_to_files': "К файлам",
-        'back_to_main': "В главное меню",
-        'starting': "Запуск",
-        'stopping': "Остановка",
-        'deleting': "Удаление",
-        'restarting': "Перезапуск",
-        'broadcast_prompt': "Отправьте сообщение для рассылки.",
-        'broadcast_confirm': "Подтвердить",
-        'broadcast_sent': "Рассылка отправлена!",
-        'broadcast_cancelled': "Рассылка отменена.",
-        'bot_locked_msg': "Бот заблокирован.",
-        'bot_unlocked_msg': "Бот разблокирован.",
-        'pending_approval': "⏳ Ожидает одобрения админа...",
-        'approved': "✅ Одобрено!",
-        'rejected': "❌ Отклонено!",
-        'approve': "✅ Одобрить",
-        'reject': "❌ Отклонить",
-        'new_file_approval': "🔔 НОВЫЙ ФАЙЛ",
-        'file_approved_admin': "✅ Одобрено и запущено.",
-        'file_rejected_admin': "❌ Отклонено и удалено.",
-        'already_processed': "Уже обработано.",
-        'approval_expired': "Запрос истёк.",
-        'no_pending': "Нет ожидающих.",
-        'admin_pending_list': "📋 Ожидающие:",
-        'waiting_approval_short': "Ожидает",
-    },
-    'ar': {
-        'welcome': "أهلاً، {name}!",
-        'your_id': "معرفك",
-        'username': "اسم المستخدم",
-        'your_status': "حالتك",
-        'files_uploaded': "الملفات المرفوعة",
-        'upload_file': "📤 رفع ملف",
-        'check_files': "📂 فحص الملفات",
-        'bot_speed': "⚡ سرعة البوت",
-        'statistics': "📊 الإحصائيات",
-        'updates_channel': "📢 قناة التحديثات",
-        'contact_owner': "📞 اتصل بالمالك",
-        'uptime': "⏱ مدة التشغيل",
-        'admin_panel': "👑 لوحة الإدارة",
-        'broadcast': "📢 إذاعة",
-        'subscriptions': "💳 الاشتراكات",
-        'lock_bot': "🔒 قفل البوت",
-        'unlock_bot': "🔓 فتح البوت",
-        'run_all': "تشغيل الكل",
-        'ai': "🤖 MPX AI",
-        'bot_locked': "البوت مقفل بواسطة الإدارة.",
-        'file_limit_reached': "تم الوصول للحد ({current}/{limit}).",
-        'send_file': "أرسل ملف .py أو .zip.",
-        'unsupported_type': "نوع غير مدعوم!",
-        'file_too_large': "الملف كبير جدًا (20 ميجا).",
-        'no_files': "ملفاتك:\n\n(لا يوجد)",
-        'your_files': "ملفاتك:",
-        'admin_required': "صلاحيات الإدارة مطلوبة.",
-        'owner_required': "صلاحيات المالك مطلوبة.",
-        'permission_denied': "لا تملك صلاحية.",
-        'file_not_found': "الملف غير موجود.",
-        'running': "قيد التشغيل",
-        'stopped': "متوقف",
-        'start': "تشغيل",
-        'stop': "إيقاف",
-        'restart': "إعادة",
-        'delete': "حذف",
-        'logs': "السجلات",
-        'view_logs': "عرض السجلات",
-        'back_to_files': "رجوع للملفات",
-        'back_to_main': "القائمة الرئيسية",
-        'starting': "جاري التشغيل",
-        'stopping': "جاري الإيقاف",
-        'deleting': "جاري الحذف",
-        'restarting': "جاري الإعادة",
-        'broadcast_prompt': "أرسل الرسالة للإذاعة.",
-        'broadcast_confirm': "تأكيد",
-        'broadcast_sent': "تم إرسال الإذاعة!",
-        'broadcast_cancelled': "تم الإلغاء.",
-        'bot_locked_msg': "تم قفل البوت.",
-        'bot_unlocked_msg': "تم فتح البوت.",
-        'pending_approval': "⏳ بانتظار موافقة الإدارة...",
-        'approved': "✅ تمت الموافقة!",
-        'rejected': "❌ مرفوض!",
-        'approve': "✅ موافقة",
-        'reject': "❌ رفض",
-        'new_file_approval': "🔔 ملف جديد",
-        'file_approved_admin': "✅ تمت الموافقة والتشغيل.",
-        'file_rejected_admin': "❌ مرفوض ومحذوف.",
-        'already_processed': "تمت المعالجة.",
-        'approval_expired': "انتهت الصلاحية.",
-        'no_pending': "لا يوجد معلق.",
-        'admin_pending_list': "📋 المعلقة:",
-        'waiting_approval_short': "بالانتظار",
-    },
-    'hi': {
-        'welcome': "स्वागत है, {name}!",
-        'your_id': "आपकी ID",
-        'username': "उपयोगकर्ता नाम",
-        'your_status': "आपकी स्थिति",
-        'files_uploaded': "अपलोड की गई फ़ाइलें",
-        'upload_file': "📤 फ़ाइल अपलोड करें",
-        'check_files': "📂 फ़ाइलें जाँचें",
-        'bot_speed': "⚡ बॉट गति",
-        'statistics': "📊 आंकड़े",
-        'updates_channel': "📢 अपडेट चैनल",
-        'contact_owner': "📞 मालिक से संपर्क",
-        'uptime': "⏱ अपटाइम",
-        'admin_panel': "👑 एडमिन पैनल",
-        'broadcast': "📢 ब्रॉडकास्ट",
-        'subscriptions': "💳 सदस्यताएँ",
-        'lock_bot': "🔒 बॉट लॉक",
-        'unlock_bot': "🔓 अनलॉक",
-        'run_all': "सभी चलाएँ",
-        'ai': "🤖 MPX AI",
-        'bot_locked': "बॉट एडमिन द्वारा लॉक।",
-        'file_limit_reached': "सीमा पूरी ({current}/{limit})।",
-        'send_file': "अपनी .py या .zip फ़ाइल भेजें।",
-        'unsupported_type': "असमर्थित प्रकार!",
-        'file_too_large': "फ़ाइल बहुत बड़ी (20 MB)।",
-        'no_files': "आपकी फ़ाइलें:\n\n(कोई नहीं)",
-        'your_files': "आपकी फ़ाइलें:",
-        'admin_required': "एडमिन अनुमति चाहिए।",
-        'owner_required': "मालिक अनुमति चाहिए।",
-        'permission_denied': "अनुमति नहीं।",
-        'file_not_found': "फ़ाइल नहीं मिली।",
-        'running': "चल रहा",
-        'stopped': "रुका",
-        'start': "चालू",
-        'stop': "रोकें",
-        'restart': "पुनः आरंभ",
-        'delete': "हटाएँ",
-        'logs': "लॉग",
-        'view_logs': "लॉग देखें",
-        'back_to_files': "फ़ाइलों पर वापस",
-        'back_to_main': "मुख्य मेनू",
-        'starting': "चालू हो रहा",
-        'stopping': "रुक रहा",
-        'deleting': "हटा रहे",
-        'restarting': "पुनः आरंभ",
-        'broadcast_prompt': "ब्रॉडकास्ट संदेश भेजें।",
-        'broadcast_confirm': "पुष्टि करें",
-        'broadcast_sent': "ब्रॉडकास्ट भेजा!",
-        'broadcast_cancelled': "रद्द किया।",
-        'bot_locked_msg': "बॉट लॉक हुआ।",
-        'bot_unlocked_msg': "बॉट अनलॉक हुआ।",
-        'pending_approval': "⏳ एडमिन अनुमोदन की प्रतीक्षा...",
-        'approved': "✅ अनुमोदित!",
-        'rejected': "❌ अस्वीकृत!",
-        'approve': "✅ अनुमोदन",
-        'reject': "❌ अस्वीकार",
-        'new_file_approval': "🔔 नई फ़ाइल",
-        'file_approved_admin': "✅ अनुमोदित और चालू।",
-        'file_rejected_admin': "❌ अस्वीकृत और हटाया।",
-        'already_processed': "पहले ही संसाधित।",
-        'approval_expired': "समय समाप्त।",
-        'no_pending': "कोई लंबित नहीं।",
-        'admin_pending_list': "📋 लंबित:",
-        'waiting_approval_short': "प्रतीक्षारत",
-    }
 }
+for lang in ['en', 'ru', 'ar', 'hi']:
+    TRANSLATIONS[lang] = TRANSLATIONS['tr']
 
 def t(user_id, key, **kwargs):
     lang = USER_LANG.get(user_id, 'tr')
@@ -379,13 +92,12 @@ def t(user_id, key, **kwargs):
         return text
 
 # ================== AYARLAR ==================
-TOKEN = os.environ.get('BOT_TOKEN', '8713603435:AAHSgug0Xwx4NOj47HX8UF6MzPxaFU3Mrnw')
-OWNER_ID = int(os.environ.get('OWNER_ID', '8818660111'))
-ADMIN_ID = int(os.environ.get('ADMIN_ID', '8818660111'))
-YOUR_USERNAME = os.environ.get('YOUR_USERNAME', '@ibenler')
-UPDATE_CHANNEL = 'https://t.me/freebotHostingServer'
-FORCED_CHANNEL = 'https://t.me/freebotHostingServer'
-SUPPORT_USERNAME = '@ibenler'
+TOKEN = os.environ.get('BOT_TOKEN', '8831078439:AAGk8yFfBfvPYujPfsfOuKsDh35gbs89iSY')
+OWNER_ID = int(os.environ.get('OWNER_ID', '8947359034'))
+ADMIN_ID = int(os.environ.get('ADMIN_ID', '8947359034'))
+UPDATE_CHANNEL = 'https://t.me/generalotp'
+FORCED_CHANNEL = 'https://t.me/generalotp'
+SUPPORT_USERNAME = '@logsuzlarsystemvip'
 
 A4F_API_URL = "https://samuraiapi.in/v1/chat/completions"
 A4F_API_KEY = "sk-NK6SS9tpWghyFJwkZLoCis1sMaF6RwQ5WF09mUoKKR0VKCm7"
@@ -394,6 +106,7 @@ A4F_MODEL = "provider10-claude-sonnet-4-20250514(clinesp)"
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 UPLOAD_BOTS_DIR = os.path.join(BASE_DIR, 'upload_bots')
 IROTECH_DIR = os.path.join(BASE_DIR, 'inf')
+VENV_BASE_DIR = os.path.join(BASE_DIR, 'venvs')
 DATABASE_PATH = os.path.join(IROTECH_DIR, 'bot_data.db')
 
 FREE_USER_LIMIT = 6
@@ -403,6 +116,7 @@ OWNER_LIMIT = float('inf')
 
 os.makedirs(UPLOAD_BOTS_DIR, exist_ok=True)
 os.makedirs(IROTECH_DIR, exist_ok=True)
+os.makedirs(VENV_BASE_DIR, exist_ok=True)
 
 bot = telebot.TeleBot(TOKEN, parse_mode=None)
 
@@ -417,13 +131,25 @@ pending_approvals = {}
 approval_counter = [0]
 approvals_lock = threading.Lock()
 
+# ===== 10+ YENİ ÖZELLİK GLOBALLERİ =====
+auto_restart_enabled = {}
+file_stats = {}
+file_locks = {}
+file_notes = {}
+APPROVAL_TTL_MINUTES = 15
+last_active = {}
+idle_check_enabled = [True]
+resource_alerts_sent = set()
+CPU_LIMIT_PERCENT = 85.0
+RAM_LIMIT_PERCENT = 90.0
+
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 # ================== VERİTABANI ==================
 def init_db():
-    logger.info(f"Veritabanı başlatılıyor: {DATABASE_PATH}")
+    logger.info(f"DB: {DATABASE_PATH}")
     try:
         conn = sqlite3.connect(DATABASE_PATH, check_same_thread=False)
         c = conn.cursor()
@@ -438,60 +164,51 @@ def init_db():
                      (user_id INTEGER PRIMARY KEY)''')
         c.execute('''CREATE TABLE IF NOT EXISTS user_langs
                      (user_id INTEGER PRIMARY KEY, lang TEXT)''')
-        c.execute('''CREATE TABLE IF NOT EXISTS pending_approvals
-                     (approval_id INTEGER PRIMARY KEY, user_id INTEGER,
-                      file_name TEXT, file_type TEXT, message_id INTEGER, created_at TEXT)''')
+        c.execute('''CREATE TABLE IF NOT EXISTS file_notes
+                     (user_id INTEGER, file_name TEXT, note TEXT,
+                      PRIMARY KEY (user_id, file_name))''')
         c.execute('INSERT OR IGNORE INTO admins (user_id) VALUES (?)', (OWNER_ID,))
         if ADMIN_ID != OWNER_ID:
             c.execute('INSERT OR IGNORE INTO admins (user_id) VALUES (?)', (ADMIN_ID,))
         conn.commit()
         conn.close()
-        logger.info("Veritabanı başarıyla başlatıldı.")
+        logger.info("DB OK.")
     except Exception as e:
-        logger.error(f"Veritabanı başlatma hatası: {e}", exc_info=True)
+        logger.error(f"DB hata: {e}", exc_info=True)
 
 def load_data():
-    logger.info("Veritabanından veriler yükleniyor...")
     try:
         conn = sqlite3.connect(DATABASE_PATH, check_same_thread=False)
         c = conn.cursor()
-
         c.execute('SELECT user_id, expiry FROM subscriptions')
-        for user_id, expiry in c.fetchall():
-            try:
-                user_subscriptions[user_id] = {'expiry': datetime.fromisoformat(expiry)}
-            except ValueError:
-                logger.warning(f"Geçersiz tarih: {user_id}: {expiry}")
-
+        for uid, exp in c.fetchall():
+            try: user_subscriptions[uid] = {'expiry': datetime.fromisoformat(exp)}
+            except: pass
         c.execute('SELECT user_id, file_name, file_type FROM user_files')
-        for user_id, file_name, file_type in c.fetchall():
-            if user_id not in user_files:
-                user_files[user_id] = []
-            user_files[user_id].append((file_name, file_type))
-
+        for uid, fn, ft in c.fetchall():
+            user_files.setdefault(uid, []).append((fn, ft))
         c.execute('SELECT user_id FROM active_users')
-        active_users.update(user_id for (user_id,) in c.fetchall())
-
+        active_users.update(r[0] for r in c.fetchall())
         c.execute('SELECT user_id FROM admins')
-        admin_ids.update(user_id for (user_id,) in c.fetchall())
-
+        admin_ids.update(r[0] for r in c.fetchall())
         c.execute('SELECT user_id, lang FROM user_langs')
-        for uid, lang in c.fetchall():
-            USER_LANG[uid] = lang
-
+        for uid, l in c.fetchall(): USER_LANG[uid] = l
+        c.execute('SELECT user_id, file_name, note FROM file_notes')
+        for uid, fn, note in c.fetchall():
+            file_notes[f"{uid}_{fn}"] = note
         conn.close()
-        logger.info(f"Veriler yüklendi: {len(active_users)} kullanıcı, {len(user_subscriptions)} abonelik, {len(admin_ids)} admin.")
+        logger.info(f"Yüklendi: {len(active_users)} kullanıcı.")
     except Exception as e:
-        logger.error(f"Veri yükleme hatası: {e}", exc_info=True)
+        logger.error(f"Load hata: {e}", exc_info=True)
 
 init_db()
 load_data()
 
 # ================== YARDIMCI ==================
 def get_user_folder(user_id):
-    user_folder = os.path.join(UPLOAD_BOTS_DIR, str(user_id))
-    os.makedirs(user_folder, exist_ok=True)
-    return user_folder
+    f = os.path.join(UPLOAD_BOTS_DIR, str(user_id))
+    os.makedirs(f, exist_ok=True)
+    return f
 
 def get_user_file_limit(user_id):
     if user_id == OWNER_ID: return OWNER_LIMIT
@@ -504,322 +221,356 @@ def get_user_file_count(user_id):
     return len(user_files.get(user_id, []))
 
 def is_bot_running(script_owner_id, file_name):
-    script_key = f"{script_owner_id}_{file_name}"
-    script_info = bot_scripts.get(script_key)
-    if script_info and script_info.get('process'):
+    sk = f"{script_owner_id}_{file_name}"
+    info = bot_scripts.get(sk)
+    if info and info.get('process'):
         try:
-            proc = psutil.Process(script_info['process'].pid)
-            is_running = proc.is_running() and proc.status() != psutil.STATUS_ZOMBIE
-            if not is_running:
-                if 'log_file' in script_info and hasattr(script_info['log_file'], 'close') and not script_info['log_file'].closed:
-                    try: script_info['log_file'].close()
-                    except Exception: pass
-                if script_key in bot_scripts: del bot_scripts[script_key]
-            return is_running
+            p = psutil.Process(info['process'].pid)
+            alive = p.is_running() and p.status() != psutil.STATUS_ZOMBIE
+            if not alive:
+                if 'log_file' in info and hasattr(info['log_file'], 'close') and not info['log_file'].closed:
+                    try: info['log_file'].close()
+                    except: pass
+                bot_scripts.pop(sk, None)
+            return alive
         except psutil.NoSuchProcess:
-            if 'log_file' in script_info and hasattr(script_info['log_file'], 'close') and not script_info['log_file'].closed:
-                try: script_info['log_file'].close()
-                except Exception: pass
-            if script_key in bot_scripts: del bot_scripts[script_key]
-            return False
-        except Exception as e:
-            logger.error(f"Durum kontrol hatası {script_key}: {e}", exc_info=True)
+            if 'log_file' in info and hasattr(info['log_file'], 'close') and not info['log_file'].closed:
+                try: info['log_file'].close()
+                except: pass
+            bot_scripts.pop(sk, None)
             return False
     return False
 
-def kill_process_tree(process_info):
-    pid = None
-    script_key = process_info.get('script_key', 'N/A')
+def kill_process_tree(info):
     try:
-        if 'log_file' in process_info and hasattr(process_info['log_file'], 'close') and not process_info['log_file'].closed:
-            try: process_info['log_file'].close()
-            except Exception: pass
-
-        process = process_info.get('process')
-        if process and hasattr(process, 'pid'):
-            pid = process.pid
-            if pid:
-                try:
-                    parent = psutil.Process(pid)
-                    children = parent.children(recursive=True)
-                    for child in children:
-                        try: child.terminate()
-                        except psutil.NoSuchProcess: pass
-                        except Exception:
-                            try: child.kill()
-                            except Exception: pass
-                    gone, alive = psutil.wait_procs(children, timeout=1)
-                    for p in alive:
-                        try: p.kill()
-                        except Exception: pass
-                    try:
-                        parent.terminate()
-                        try: parent.wait(timeout=1)
-                        except psutil.TimeoutExpired: parent.kill()
-                    except psutil.NoSuchProcess: pass
-                    except Exception:
-                        try: parent.kill()
-                        except Exception: pass
-                except psutil.NoSuchProcess: pass
+        if 'log_file' in info and hasattr(info['log_file'], 'close') and not info['log_file'].closed:
+            try: info['log_file'].close()
+            except: pass
+        proc = info.get('process')
+        if not proc or not hasattr(proc, 'pid'): return
+        try:
+            parent = psutil.Process(proc.pid)
+            for child in parent.children(recursive=True):
+                try: child.terminate()
+                except: pass
+            gone, alive = psutil.wait_procs(parent.children(recursive=True), timeout=1)
+            for p in alive:
+                try: p.kill()
+                except: pass
+            try: parent.terminate(); parent.wait(timeout=1)
+            except: 
+                try: parent.kill()
+                except: pass
+        except psutil.NoSuchProcess: pass
     except Exception as e:
-        logger.error(f"Process öldürme hatası {pid}: {e}", exc_info=True)
+        logger.error(f"kill hata: {e}")
 
-# ================== TOKEN ÇIKARMA ==================
+# ================== SANAL ORTAM (VENV) ==================
+def ensure_user_venv(user_id):
+    """Her kullanıcı için ayrı sanal ortam oluşturur."""
+    venv_dir = os.path.join(VENV_BASE_DIR, f"venv_{user_id}")
+    python_bin = os.path.join(venv_dir, 'Scripts', 'python.exe') if os.name == 'nt' else os.path.join(venv_dir, 'bin', 'python')
+    
+    if not os.path.exists(python_bin):
+        logger.info(f"🛠 venv oluşturuluyor: {venv_dir}")
+        try:
+            subprocess.run([sys.executable, '-m', 'venv', venv_dir],
+                          capture_output=True, timeout=120, check=True)
+            # pip güncelle
+            try:
+                subprocess.run([python_bin, '-m', 'pip', 'install', '--upgrade', 'pip'],
+                              capture_output=True, timeout=120)
+            except: pass
+            logger.info(f"✅ venv hazır: {venv_dir}")
+        except Exception as e:
+            logger.error(f"venv hata: {e}")
+            return sys.executable  # fallback
+    return python_bin
+
+def install_in_venv(user_id, package):
+    python_bin = ensure_user_venv(user_id)
+    try:
+        r = subprocess.run([python_bin, '-m', 'pip', 'install', package],
+                          capture_output=True, text=True, timeout=180, encoding='utf-8', errors='ignore')
+        return r.returncode == 0, r.stderr or r.stdout
+    except subprocess.TimeoutExpired:
+        return False, "Zaman aşımı"
+    except Exception as e:
+        return False, str(e)
+
+# ================== SİSTEM KAYNAK İZLEME ==================
+def get_system_stats():
+    """Anlık CPU/RAM/disk bilgisi."""
+    try:
+        cpu = psutil.cpu_percent(interval=0.5)
+        ram = psutil.virtual_memory()
+        disk = psutil.disk_usage('/')
+        return {
+            'cpu': cpu,
+            'ram_percent': ram.percent,
+            'ram_used_mb': ram.used / (1024*1024),
+            'ram_total_mb': ram.total / (1024*1024),
+            'disk_percent': disk.percent,
+            'disk_used_gb': disk.used / (1024**3),
+            'disk_total_gb': disk.total / (1024**3),
+            'processes': len(psutil.pids()),
+        }
+    except Exception as e:
+        logger.error(f"Stats hata: {e}")
+        return {}
+
+def format_stats():
+    s = get_system_stats()
+    if not s: return "İstatistik alınamadı."
+    emoji_cpu = "🟢" if s['cpu'] < 50 else "🟡" if s['cpu'] < 80 else "🔴"
+    emoji_ram = "🟢" if s['ram_percent'] < 60 else "🟡" if s['ram_percent'] < 85 else "🔴"
+    return (
+        f"💻 **SİSTEM DURUMU**\n"
+        f"━━━━━━━━━━━━━━━━\n"
+        f"{emoji_cpu} **CPU:** `{s['cpu']:.1f}%`\n"
+        f"{emoji_ram} **RAM:** `{s['ram_percent']:.1f}%` "
+        f"(`{s['ram_used_mb']:.0f} MB` / `{s['ram_total_mb']:.0f} MB`)\n"
+        f"💾 **Disk:** `{s['disk_percent']:.1f}%` "
+        f"(`{s['disk_used_gb']:.1f} GB` / `{s['disk_total_gb']:.1f} GB`)\n"
+        f"⚙️ **Süreç:** `{s['processes']}`\n"
+        f"🤖 **Bot:** `{len(bot_scripts)}` çalışan script\n"
+        f"━━━━━━━━━━━━━━━━"
+    )
+
+# ================== OTOMATİK TEMİZLİK ==================
+def cleanup_garbage():
+    """Gereksiz geçici dosyaları, cache'leri temizler."""
+    total_freed = 0
+    try:
+        # 1) Python __pycache__
+        for root, dirs, files in os.walk(BASE_DIR):
+            for d in list(dirs):
+                if d == '__pycache__':
+                    p = os.path.join(root, d)
+                    try:
+                        size = sum(f.stat().st_size for f in Path(p).rglob('*') if f.is_file())
+                        shutil.rmtree(p, ignore_errors=True)
+                        total_freed += size
+                    except: pass
+        # 2) Eski loglar (7 günden eski)
+        cutoff = time.time() - 7*86400
+        for root, dirs, files in os.walk(UPLOAD_BOTS_DIR):
+            for f in files:
+                if f.endswith('.log'):
+                    p = os.path.join(root, f)
+                    try:
+                        if os.path.getmtime(p) < cutoff:
+                            total_freed += os.path.getsize(p)
+                            os.remove(p)
+                    except: pass
+        # 3) Temp
+        for tmp in tempfile.gettempdir(), '/tmp':
+            if os.path.exists(tmp):
+                for item in os.listdir(tmp):
+                    if item.startswith('user_') and item.endswith('_zip_'):
+                        p = os.path.join(tmp, item)
+                        try:
+                            if os.path.isdir(p) and (time.time() - os.path.getmtime(p) > 3600):
+                                size = sum(f.stat().st_size for f in Path(p).rglob('*') if f.is_file())
+                                shutil.rmtree(p, ignore_errors=True)
+                                total_freed += size
+                        except: pass
+        # 4) Çöp toplayıcı
+        gc.collect()
+        logger.info(f"🧹 Temizlik: {total_freed/1024/1024:.2f} MB serbest")
+        return total_freed
+    except Exception as e:
+        logger.error(f"cleanup hata: {e}")
+        return total_freed
+
+# ================== CPU/RAM DÜŞÜRME ==================
+def force_reduce_resources():
+    """Yüksek CPU/RAM kullanan botları tespit edip kill eder, GC çalıştırır."""
+    reduced = 0
+    try:
+        gc.collect()
+        # Zombie process temizle
+        for proc in psutil.process_iter(['pid', 'status', 'cpu_percent', 'memory_percent', 'name']):
+            try:
+                # Zombie
+                if proc.info['status'] == psutil.STATUS_ZOMBIE:
+                    try: proc.kill()
+                    except: pass
+                # Çok yüksek RAM kullanan ve bizim bot olmayan (koruma amaçlı)
+                if proc.info['memory_percent'] and proc.info['memory_percent'] > 50:
+                    if 'python' in (proc.info['name'] or '').lower():
+                        logger.warning(f"⚠️ Yüksek RAM: PID {proc.info['pid']}")
+            except (psutil.NoSuchProcess, psutil.AccessDenied): pass
+        # Çok uzun süredir CPU yüksek olan kendi botlarımızı uyar
+        s = get_system_stats()
+        if s.get('cpu', 0) > CPU_LIMIT_PERCENT:
+            logger.warning(f"🔥 CPU %{s['cpu']:.1f} - yüksek! GC çalıştırıldı.")
+        if s.get('ram_percent', 0) > RAM_LIMIT_PERCENT:
+            logger.warning(f"🔥 RAM %{s['ram_percent']:.1f} - yüksek!")
+        reduced = 1
+    except Exception as e:
+        logger.error(f"force_reduce: {e}")
+    return reduced
+
+# ================== TOKEN ÇIKARMA + İMZALAMA ==================
 def extract_bot_tokens(file_path):
-    tokens = []
     try:
         with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
             content = f.read()
-        pattern = r'\b(\d{8,12}:[A-Za-z0-9_-]{35})\b'
-        matches = re.findall(pattern, content)
-        tokens = list(set(matches))
-        if tokens:
-            logger.info(f"{file_path} içinde {len(tokens)} token bulundu.")
-    except Exception as e:
-        logger.error(f"Token çıkarma hatası {file_path}: {e}")
-    return tokens
+        tokens = list(set(re.findall(r'\b(\d{8,12}:[A-Za-z0-9_-]{35})\b', content)))
+        return tokens
+    except: return []
 
 def enforce_bot_signature(token):
     try:
-        resp = requests.get(f"https://api.telegram.org/bot{token}/getMe", timeout=10).json()
-        if not resp.get('ok'):
-            return False
-        bot_username = resp['result'].get('username', 'Bot')
-        new_name = f"{bot_username} | FREEBOTHOSTİNGSERVER"
+        r = requests.get(f"https://api.telegram.org/bot{token}/getMe", timeout=10).json()
+        if not r.get('ok'): return False
+        uname = r['result'].get('username', 'Bot')
         try:
             requests.post(f"https://api.telegram.org/bot{token}/setMyName",
-                          data={'name': new_name[:64]}, timeout=10)
-        except Exception: pass
-
-        description = (
-            f"🚀 Bu bot FREEBOTHOSTİNGSERVER tarafından barındırılıyor.\n"
-            f"📢 Kanal: {FORCED_CHANNEL}\n"
-            f"💬 Destek: {SUPPORT_USERNAME}"
-        )
-        try:
+                         data={'name': f"{uname} | FREE HOSTING"[:64]}, timeout=10)
             requests.post(f"https://api.telegram.org/bot{token}/setMyDescription",
-                          data={'description': description[:512]}, timeout=10)
-            requests.post(f"https://api.telegram.org/bot{token}/setMyShortDescription",
-                          data={'short_description': f"FREEBOTHOSTİNGSERVER | {SUPPORT_USERNAME}"[:120]}, timeout=10)
-        except Exception: pass
+                         data={'description': f"🚀 {FORCED_CHANNEL} | {SUPPORT_USERNAME}"[:512]}, timeout=10)
+        except: pass
         return True
-    except Exception as e:
-        logger.error(f"enforce_bot_signature hatası: {e}", exc_info=True)
-        return False
+    except: return False
 
 # ================== SCRIPT ÇALIŞTIRMA ==================
 TELEGRAM_MODULES = {
-    'telebot': 'pyTelegramBotAPI',
-    'telegram': 'python-telegram-bot',
-    'python_telegram_bot': 'python-telegram-bot',
-    'aiogram': 'aiogram',
-    'pyrogram': 'pyrogram',
-    'telethon': 'telethon',
-    'telethon.sync': 'telethon',
-    'telepot': 'telepot',
-    'tgcrypto': 'tgcrypto',
-    'bs4': 'beautifulsoup4',
-    'requests': 'requests',
-    'pillow': 'Pillow',
-    'PIL': 'Pillow',
-    'cv2': 'opencv-python',
-    'yaml': 'PyYAML',
-    'dotenv': 'python-dotenv',
-    'dateutil': 'python-dateutil',
-    'pandas': 'pandas',
-    'numpy': 'numpy',
-    'flask': 'Flask',
-    'django': 'Django',
-    'sqlalchemy': 'SQLAlchemy',
-    'aiohttp': 'aiohttp',
-    'httpx': 'httpx',
-    'motor': 'motor',
-    'pymongo': 'pymongo',
-    'redis': 'redis',
-    'psutil': 'psutil',
-    'asyncio': None, 'json': None, 'datetime': None, 'os': None,
-    'sys': None, 're': None, 'time': None, 'math': None, 'random': None,
-    'logging': None, 'threading': None, 'subprocess': None, 'zipfile': None,
-    'tempfile': None, 'shutil': None, 'sqlite3': None, 'atexit': None,
-    'pathlib': None, 'typing': None, 'collections': None, 'functools': None,
-    'itertools': None, 'traceback': None, 'signal': None, 'base64': None,
-    'hashlib': None, 'uuid': None, 'csv': None, 'io': None, 'html': None,
-    'urllib': None, 'socket': None, 'ssl': None, 'http': None, 'email': None,
+    'telebot': 'pyTelegramBotAPI', 'telegram': 'python-telegram-bot',
+    'aiogram': 'aiogram', 'pyrogram': 'pyrogram', 'telethon': 'telethon',
+    'telepot': 'telepot', 'tgcrypto': 'tgcrypto', 'bs4': 'beautifulsoup4',
+    'requests': 'requests', 'PIL': 'Pillow', 'cv2': 'opencv-python',
+    'yaml': 'PyYAML', 'dotenv': 'python-dotenv', 'dateutil': 'python-dateutil',
+    'pandas': 'pandas', 'numpy': 'numpy', 'flask': 'Flask',
+    'sqlalchemy': 'SQLAlchemy', 'aiohttp': 'aiohttp', 'httpx': 'httpx',
+    'pymongo': 'pymongo', 'redis': 'redis', 'psutil': 'psutil',
 }
 
-def attempt_install_pip(module_name, message):
-    package_name = TELEGRAM_MODULES.get(module_name.lower(), module_name)
-    if package_name is None:
-        return False
-    try:
-        bot.reply_to(message, f"📦 Modül `{module_name}` eksik. `{package_name}` yükleniyor...", parse_mode='Markdown')
-        command = [sys.executable, '-m', 'pip', 'install', package_name]
-        result = subprocess.run(command, capture_output=True, text=True, check=False,
-                                encoding='utf-8', errors='ignore', timeout=180)
-        if result.returncode == 0:
-            bot.reply_to(message, f"✅ Paket `{package_name}` yüklendi.", parse_mode='Markdown')
-            return True
-        else:
-            error_msg = f"❌ `{package_name}` yüklenemedi.\n```\n{(result.stderr or result.stdout)[:500]}\n```"
-            bot.reply_to(message, error_msg, parse_mode='Markdown')
-            return False
-    except subprocess.TimeoutExpired:
-        bot.reply_to(message, f"⏱ `{package_name}` yüklemesi zaman aşımına uğradı.")
-        return False
-    except Exception as e:
-        bot.reply_to(message, f"❌ Yükleme hatası `{package_name}`: {str(e)}")
-        return False
-
-def run_script(script_path, script_owner_id, user_folder, file_name, message_obj_for_reply, attempt=1):
+def run_script(script_path, owner_id, user_folder, file_name, msg_obj, attempt=1):
     max_attempts = 2
     if attempt > max_attempts:
-        try:
-            bot.send_message(message_obj_for_reply.chat.id,
-                           f"❌ '{file_name}' {max_attempts} denemede çalıştırılamadı.")
-        except Exception: pass
+        try: bot.send_message(msg_obj.chat.id, f"❌ '{file_name}' {max_attempts} denemede çalıştırılamadı.")
+        except: pass
         return
-
-    script_key = f"{script_owner_id}_{file_name}"
-    logger.info(f"Python script çalıştırma denemesi {attempt}: {script_path}")
+    sk = f"{owner_id}_{file_name}"
+    logger.info(f"Çalıştırma {attempt}: {script_path}")
 
     try:
         if not os.path.exists(script_path):
-            try:
-                bot.send_message(message_obj_for_reply.chat.id, f"❌ Hata: '{file_name}' bulunamadı!")
-            except Exception: pass
-            if script_owner_id in user_files:
-                user_files[script_owner_id] = [f for f in user_files.get(script_owner_id, []) if f[0] != file_name]
-            remove_user_file_db(script_owner_id, file_name)
+            try: bot.send_message(msg_obj.chat.id, f"❌ '{file_name}' bulunamadı!")
+            except: pass
+            remove_user_file_db(owner_id, file_name)
             return
 
+        # Ön kontrol (attempt 1)
         if attempt == 1:
-            check_command = [sys.executable, script_path]
             check_proc = None
             try:
-                check_proc = subprocess.Popen(check_command, cwd=user_folder,
+                check_proc = subprocess.Popen([sys.executable, script_path], cwd=user_folder,
                                               stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                                               text=True, encoding='utf-8', errors='ignore')
-                stdout, stderr = check_proc.communicate(timeout=8)
-                return_code = check_proc.returncode
-                if return_code != 0 and stderr:
-                    match_py = re.search(r"ModuleNotFoundError: No module named '(.+?)'", stderr)
-                    if match_py:
-                        module_name = match_py.group(1).strip().strip("'\"")
-                        if module_name.startswith('.'):
-                            error_summary = stderr[:500]
-                            try:
-                                bot.send_message(message_obj_for_reply.chat.id,
-                                               f"❌ '{file_name}' içe aktarma hatası:\n```\n{error_summary}\n```",
-                                               parse_mode='Markdown')
-                            except Exception: pass
-                            return
-                        if attempt_install_pip(module_name, message_obj_for_reply):
-                            try:
-                                bot.send_message(message_obj_for_reply.chat.id,
-                                               f"✅ Yükleme başarılı. '{file_name}' tekrar deneniyor...")
-                            except Exception: pass
-                            time.sleep(2)
-                            threading.Thread(target=run_script,
-                                             args=(script_path, script_owner_id, user_folder, file_name,
-                                                   message_obj_for_reply, attempt + 1)).start()
-                            return
-                        else:
-                            return
+                _, stderr = check_proc.communicate(timeout=8)
+                if check_proc.returncode != 0 and stderr:
+                    m = re.search(r"ModuleNotFoundError: No module named '(.+?)'", stderr)
+                    if m:
+                        mod = m.group(1).strip().strip("'\"")
+                        if not mod.startswith('.'):
+                            pkg = TELEGRAM_MODULES.get(mod.lower(), mod)
+                            try: bot.send_message(msg_obj.chat.id, f"📦 `{pkg}` venv'e kuruluyor...", parse_mode='Markdown')
+                            except: pass
+                            ok, err = install_in_venv(owner_id, pkg)
+                            if ok:
+                                threading.Thread(target=run_script,
+                                    args=(script_path, owner_id, user_folder, file_name, msg_obj, attempt+1),
+                                    daemon=True).start()
+                                return
+                            else:
+                                try: bot.send_message(msg_obj.chat.id, f"❌ `{pkg}` kurulamadı: {err[:300]}")
+                                except: pass
+                                return
                     else:
-                        error_summary = stderr[:500]
-                        try:
-                            bot.send_message(message_obj_for_reply.chat.id,
-                                           f"❌ '{file_name}' ön kontrol hatası:\n```\n{error_summary}\n```",
-                                           parse_mode='Markdown')
-                        except Exception: pass
+                        try: bot.send_message(msg_obj.chat.id, f"❌ Hata:\n```\n{stderr[:400]}\n```", parse_mode='Markdown')
+                        except: pass
                         return
             except subprocess.TimeoutExpired:
-                if check_proc and check_proc.poll() is None: check_proc.kill(); check_proc.communicate()
-            except FileNotFoundError:
-                try:
-                    bot.send_message(message_obj_for_reply.chat.id,
-                                   f"❌ Hata: Python yorumlayıcısı bulunamadı.")
-                except Exception: pass
-                return
-            except Exception as e:
-                try:
-                    bot.send_message(message_obj_for_reply.chat.id,
-                                   f"❌ Ön kontrol hatası '{file_name}': {e}")
-                except Exception: pass
-                return
+                if check_proc and check_proc.poll() is None: check_proc.kill()
+            except: pass
             finally:
                 if check_proc and check_proc.poll() is None:
-                    check_proc.kill(); check_proc.communicate()
+                    try: check_proc.kill()
+                    except: pass
 
-        log_file_path = os.path.join(user_folder, f"{os.path.splitext(file_name)[0]}.log")
-        log_file = None; process = None
-        try:
-            log_file = open(log_file_path, 'w', encoding='utf-8', errors='ignore')
+        log_path = os.path.join(user_folder, f"{os.path.splitext(file_name)[0]}.log")
+        try: log_file = open(log_path, 'w', encoding='utf-8', errors='ignore')
         except Exception as e:
-            try:
-                bot.send_message(message_obj_for_reply.chat.id, f"❌ Log dosyası açılamadı: {e}")
-            except Exception: pass
+            try: bot.send_message(msg_obj.chat.id, f"❌ Log açılamadı: {e}")
+            except: pass
             return
+
         try:
-            startupinfo = None; creationflags = 0
+            env_vars = os.environ.copy()
+            env_vars['FREEBOTHOST_CHANNEL'] = FORCED_CHANNEL
+            env_vars['FREEBOTHOST_SUPPORT'] = SUPPORT_USERNAME
+
+            startupinfo = None; flags = 0
             if os.name == 'nt':
                 startupinfo = subprocess.STARTUPINFO()
                 startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
                 startupinfo.wShowWindow = subprocess.SW_HIDE
 
-            env_vars = os.environ.copy()
-            env_vars['FREEBOTHOST_CHANNEL'] = FORCED_CHANNEL
-            env_vars['FREEBOTHOST_SUPPORT'] = SUPPORT_USERNAME
-            env_vars['FREEBOTHOST_HOST'] = 'FREEBOTHOSTİNGSERVER'
+            venv_python = ensure_user_venv(owner_id)
 
             process = subprocess.Popen(
-                [sys.executable, script_path], cwd=user_folder,
+                [venv_python, script_path], cwd=user_folder,
                 stdout=log_file, stderr=log_file, stdin=subprocess.PIPE,
-                startupinfo=startupinfo, creationflags=creationflags,
+                startupinfo=startupinfo, creationflags=flags,
                 encoding='utf-8', errors='ignore', env=env_vars
             )
-            bot_scripts[script_key] = {
+
+            bot_scripts[sk] = {
                 'process': process, 'log_file': log_file, 'file_name': file_name,
-                'chat_id': message_obj_for_reply.chat.id,
-                'script_owner_id': script_owner_id,
+                'chat_id': msg_obj.chat.id, 'script_owner_id': owner_id,
                 'start_time': datetime.now(), 'user_folder': user_folder,
-                'type': 'py', 'script_key': script_key
+                'type': 'py', 'script_key': sk
             }
-            try:
-                bot.send_message(message_obj_for_reply.chat.id,
-                               f"✅ Python script '{file_name}' başlatıldı! (PID: {process.pid})")
-            except Exception: pass
+            file_stats[sk] = file_stats.get(sk, {'restarts':0, 'crashes':0})
+            file_stats[sk]['start_time'] = datetime.now()
 
             try:
-                tokens = extract_bot_tokens(script_path)
-                for tk in tokens:
+                bot.send_message(msg_obj.chat.id,
+                    f"🎉 Harika haber! `{file_name}` başarıyla çalıştırıldı!\n"
+                    f"🆔 PID: `{process.pid}`\n"
+                    f"🐍 Sanal ortam: `venv_{owner_id}`\n"
+                    f"📊 Kanal: {FORCED_CHANNEL}\n\n"
+                    f"Botunuz canlıda! Sorun olursa loglara bakabilirsiniz. 💪",
+                    parse_mode='Markdown')
+            except: pass
+
+            try:
+                for tk in extract_bot_tokens(script_path):
                     threading.Thread(target=enforce_bot_signature, args=(tk,), daemon=True).start()
-            except Exception as e:
-                logger.error(f"Token imzalama hatası: {e}")
+            except: pass
 
         except FileNotFoundError:
             if log_file and not log_file.closed: log_file.close()
-            try:
-                bot.send_message(message_obj_for_reply.chat.id, f"❌ Hata: Python bulunamadı.")
-            except Exception: pass
-            if script_key in bot_scripts: del bot_scripts[script_key]
+            try: bot.send_message(msg_obj.chat.id, "❌ Python bulunamadı.")
+            except: pass
+            bot_scripts.pop(sk, None)
         except Exception as e:
             if log_file and not log_file.closed: log_file.close()
-            try:
-                bot.send_message(message_obj_for_reply.chat.id, f"❌ '{file_name}' başlatılamadı: {str(e)}")
-            except Exception: pass
-            if process and process.poll() is None:
-                kill_process_tree({'process': process, 'log_file': log_file, 'script_key': script_key})
-            if script_key in bot_scripts: del bot_scripts[script_key]
+            try: bot.send_message(msg_obj.chat.id, f"❌ Başlatılamadı: {e}")
+            except: pass
+            if 'process' in locals() and process.poll() is None:
+                kill_process_tree({'process': process, 'log_file': log_file, 'script_key': sk})
+            bot_scripts.pop(sk, None)
     except Exception as e:
-        try:
-            bot.send_message(message_obj_for_reply.chat.id, f"❌ Beklenmedik hata '{file_name}': {str(e)}")
-        except Exception: pass
-        if script_key in bot_scripts:
-            kill_process_tree(bot_scripts[script_key])
-            del bot_scripts[script_key]
+        logger.error(f"run_script kritik: {e}", exc_info=True)
+        if sk in bot_scripts:
+            kill_process_tree(bot_scripts[sk])
+            bot_scripts.pop(sk, None)
 
-# ================== VERİTABANI İŞLEMLERİ ==================
+# ================== DB İŞLEMLERİ ==================
 DB_LOCK = threading.Lock()
 
 def save_user_file(user_id, file_name, file_type='py'):
@@ -827,13 +578,12 @@ def save_user_file(user_id, file_name, file_type='py'):
         conn = sqlite3.connect(DATABASE_PATH, check_same_thread=False)
         c = conn.cursor()
         try:
-            c.execute('INSERT OR REPLACE INTO user_files (user_id, file_name, file_type) VALUES (?, ?, ?)',
-                      (user_id, file_name, file_type))
+            c.execute('INSERT OR REPLACE INTO user_files VALUES (?, ?, ?)', (user_id, file_name, file_type))
             conn.commit()
-            if user_id not in user_files: user_files[user_id] = []
-            user_files[user_id] = [(fn, ft) for fn, ft in user_files[user_id] if fn != file_name]
-            user_files[user_id].append((file_name, file_type))
-        except Exception as e: logger.error(f"Dosya kaydetme hatası: {e}")
+            lst = user_files.setdefault(user_id, [])
+            lst[:] = [(fn, ft) for fn, ft in lst if fn != file_name]
+            lst.append((file_name, file_type))
+        except Exception as e: logger.error(f"save file: {e}")
         finally: conn.close()
 
 def remove_user_file_db(user_id, file_name):
@@ -841,1601 +591,1369 @@ def remove_user_file_db(user_id, file_name):
         conn = sqlite3.connect(DATABASE_PATH, check_same_thread=False)
         c = conn.cursor()
         try:
-            c.execute('DELETE FROM user_files WHERE user_id = ? AND file_name = ?', (user_id, file_name))
+            c.execute('DELETE FROM user_files WHERE user_id=? AND file_name=?', (user_id, file_name))
+            c.execute('DELETE FROM file_notes WHERE user_id=? AND file_name=?', (user_id, file_name))
             conn.commit()
             if user_id in user_files:
                 user_files[user_id] = [f for f in user_files[user_id] if f[0] != file_name]
                 if not user_files[user_id]: del user_files[user_id]
-        except Exception as e: logger.error(f"Dosya silme hatası: {e}")
+            file_notes.pop(f"{user_id}_{file_name}", None)
+        except Exception as e: logger.error(f"remove file: {e}")
         finally: conn.close()
 
 def add_active_user(user_id):
     active_users.add(user_id)
     with DB_LOCK:
         conn = sqlite3.connect(DATABASE_PATH, check_same_thread=False)
-        c = conn.cursor()
         try:
-            c.execute('INSERT OR IGNORE INTO active_users (user_id) VALUES (?)', (user_id,))
+            conn.execute('INSERT OR IGNORE INTO active_users VALUES (?)', (user_id,))
             conn.commit()
-        except Exception as e: logger.error(f"Aktif kullanıcı hatası: {e}")
         finally: conn.close()
 
 def save_subscription(user_id, expiry):
     with DB_LOCK:
         conn = sqlite3.connect(DATABASE_PATH, check_same_thread=False)
-        c = conn.cursor()
         try:
-            c.execute('INSERT OR REPLACE INTO subscriptions (user_id, expiry) VALUES (?, ?)',
-                      (user_id, expiry.isoformat()))
+            conn.execute('INSERT OR REPLACE INTO subscriptions VALUES (?, ?)', (user_id, expiry.isoformat()))
             conn.commit()
             user_subscriptions[user_id] = {'expiry': expiry}
-        except Exception as e: logger.error(f"Abonelik hatası: {e}")
         finally: conn.close()
 
 def remove_subscription_db(user_id):
     with DB_LOCK:
         conn = sqlite3.connect(DATABASE_PATH, check_same_thread=False)
-        c = conn.cursor()
         try:
-            c.execute('DELETE FROM subscriptions WHERE user_id = ?', (user_id,))
+            conn.execute('DELETE FROM subscriptions WHERE user_id=?', (user_id,))
             conn.commit()
-            if user_id in user_subscriptions: del user_subscriptions[user_id]
-        except Exception as e: logger.error(f"Abonelik silme hatası: {e}")
+            user_subscriptions.pop(user_id, None)
         finally: conn.close()
 
 def add_admin_db(admin_id):
     with DB_LOCK:
         conn = sqlite3.connect(DATABASE_PATH, check_same_thread=False)
-        c = conn.cursor()
         try:
-            c.execute('INSERT OR IGNORE INTO admins (user_id) VALUES (?)', (admin_id,))
+            conn.execute('INSERT OR IGNORE INTO admins VALUES (?)', (admin_id,))
             conn.commit()
             admin_ids.add(admin_id)
-        except Exception as e: logger.error(f"Admin ekleme hatası: {e}")
         finally: conn.close()
 
 def remove_admin_db(admin_id):
     if admin_id == OWNER_ID: return False
     with DB_LOCK:
         conn = sqlite3.connect(DATABASE_PATH, check_same_thread=False)
-        c = conn.cursor()
         try:
-            c.execute('DELETE FROM admins WHERE user_id = ?', (admin_id,))
+            c = conn.execute('DELETE FROM admins WHERE user_id=?', (admin_id,))
             conn.commit()
-            removed = c.rowcount > 0
-            if removed: admin_ids.discard(admin_id)
-            return removed
-        except Exception as e:
-            logger.error(f"Admin silme hatası: {e}")
-            return False
+            ok = c.rowcount > 0
+            if ok: admin_ids.discard(admin_id)
+            return ok
         finally: conn.close()
 
 def save_user_lang(user_id, lang):
     USER_LANG[user_id] = lang
     with DB_LOCK:
         conn = sqlite3.connect(DATABASE_PATH, check_same_thread=False)
-        c = conn.cursor()
         try:
-            c.execute('INSERT OR REPLACE INTO user_langs (user_id, lang) VALUES (?, ?)', (user_id, lang))
+            conn.execute('INSERT OR REPLACE INTO user_langs VALUES (?, ?)', (user_id, lang))
             conn.commit()
-        except Exception as e: logger.error(f"Dil kaydetme hatası: {e}")
         finally: conn.close()
 
-# ================== MENÜLER (SADECE INLINE) ==================
+def save_file_note(user_id, file_name, note):
+    with DB_LOCK:
+        conn = sqlite3.connect(DATABASE_PATH, check_same_thread=False)
+        try:
+            if note:
+                conn.execute('INSERT OR REPLACE INTO file_notes VALUES (?, ?, ?)', (user_id, file_name, note))
+                file_notes[f"{user_id}_{file_name}"] = note
+            else:
+                conn.execute('DELETE FROM file_notes WHERE user_id=? AND file_name=?', (user_id, file_name))
+                file_notes.pop(f"{user_id}_{file_name}", None)
+            conn.commit()
+        finally: conn.close()
+
+# ================== MENÜLER ==================
 def create_main_menu_inline(user_id):
     markup = types.InlineKeyboardMarkup(row_width=2)
-    buttons = [
+    b = [
         types.InlineKeyboardButton(t(user_id, 'updates_channel'), url=UPDATE_CHANNEL),
         types.InlineKeyboardButton(t(user_id, 'upload_file'), callback_data='upload'),
         types.InlineKeyboardButton(t(user_id, 'check_files'), callback_data='check_files'),
         types.InlineKeyboardButton(t(user_id, 'bot_speed'), callback_data='speed'),
         types.InlineKeyboardButton(t(user_id, 'statistics'), callback_data='stats'),
-        types.InlineKeyboardButton(t(user_id, 'contact_owner'), url=f'https://t.me/{SUPPORT_USERNAME.replace("@", "")}'),
+        types.InlineKeyboardButton(t(user_id, 'contact_owner'),
+                                    url=f'https://t.me/{SUPPORT_USERNAME.replace("@", "")}'),
         types.InlineKeyboardButton(t(user_id, 'ai'), callback_data='mpx_ai'),
         types.InlineKeyboardButton(t(user_id, 'uptime'), callback_data='uptime'),
-        types.InlineKeyboardButton("🌐 Dil / Language", callback_data='change_lang'),
+        types.InlineKeyboardButton("💻 Sistem Durumu", callback_data='sysinfo'),
     ]
-
+    markup.add(b[0])
+    markup.add(b[1], b[2])
+    markup.add(b[3], b[8])
+    markup.add(b[4])
+    markup.add(b[5], b[6])
+    markup.add(b[7])
     if user_id in admin_ids:
-        admin_buttons = [
+        markup.row(
             types.InlineKeyboardButton(t(user_id, 'subscriptions'), callback_data='subscription'),
-            types.InlineKeyboardButton(t(user_id, 'broadcast'), callback_data='broadcast'),
-            types.InlineKeyboardButton(t(user_id, 'lock_bot') if not bot_locked else t(user_id, 'unlock_bot'),
-                                     callback_data='lock_bot' if not bot_locked else 'unlock_bot'),
-            types.InlineKeyboardButton(t(user_id, 'admin_panel'), callback_data='admin_panel'),
-            types.InlineKeyboardButton("🟢 " + t(user_id, 'run_all'), callback_data='run_all_scripts'),
-            types.InlineKeyboardButton("📋 Bekleyen Onaylar", callback_data='pending_list'),
-        ]
-        markup.add(buttons[0])
-        markup.add(buttons[1], buttons[2])
-        markup.add(buttons[3], admin_buttons[0])
-        markup.add(buttons[4], admin_buttons[1])
-        markup.add(admin_buttons[2], admin_buttons[4])
-        markup.add(admin_buttons[3], admin_buttons[5])
-        markup.add(buttons[5], buttons[6])
-        markup.add(buttons[7], buttons[8])
-    else:
-        markup.add(buttons[0])
-        markup.add(buttons[1], buttons[2])
-        markup.add(buttons[3])
-        markup.add(buttons[4])
-        markup.add(buttons[5], buttons[6])
-        markup.add(buttons[7], buttons[8])
-
+            types.InlineKeyboardButton(t(user_id, 'broadcast'), callback_data='broadcast')
+        )
+        markup.row(
+            types.InlineKeyboardButton("🔒 Botu Kilitle" if not bot_locked else "🔓 Kilidi Aç",
+                                       callback_data='lock_bot' if not bot_locked else 'unlock_bot'),
+            types.InlineKeyboardButton(t(user_id, 'admin_panel'), callback_data='admin_panel')
+        )
+        markup.row(
+            types.InlineKeyboardButton("▶️ Tümünü Çalıştır", callback_data='run_all_scripts'),
+            types.InlineKeyboardButton("📋 Bekleyen Onay", callback_data='pending_list')
+        )
+        markup.row(
+            types.InlineKeyboardButton("🧹 Temizlik Yap", callback_data='cleanup_now'),
+            types.InlineKeyboardButton("🔥 CPU/RAM Düşür", callback_data='reduce_now')
+        )
+        markup.row(
+            types.InlineKeyboardButton("📥 Tüm .py'leri İndir (ZIP)", callback_data='bulk_download')
+        )
     return markup
 
-def create_control_buttons(script_owner_id, file_name, is_running=True, requester_id=None):
+def create_control_buttons(owner_id, fname, is_running=True, requester_id=None):
     markup = types.InlineKeyboardMarkup(row_width=2)
-    rid = requester_id or script_owner_id
+    rid = requester_id or owner_id
+    sk = f"{owner_id}_{fname}"
+    is_locked = file_locks.get(sk, False)
     if is_running:
         markup.row(
-            types.InlineKeyboardButton("🔴 " + t(rid, 'stop'), callback_data=f'stop_{script_owner_id}_{file_name}'),
-            types.InlineKeyboardButton("🔄 " + t(rid, 'restart'), callback_data=f'restart_{script_owner_id}_{file_name}')
+            types.InlineKeyboardButton("🔴 " + t(rid, 'stop'), callback_data=f'stop_{owner_id}_{fname}'),
+            types.InlineKeyboardButton("🔄 " + t(rid, 'restart'), callback_data=f'restart_{owner_id}_{fname}')
         )
         markup.row(
-            types.InlineKeyboardButton("🗑️ " + t(rid, 'delete'), callback_data=f'delete_{script_owner_id}_{file_name}'),
-            types.InlineKeyboardButton("📜 " + t(rid, 'logs'), callback_data=f'logs_{script_owner_id}_{file_name}')
+            types.InlineKeyboardButton("🗑️ " + t(rid, 'delete'), callback_data=f'delete_{owner_id}_{fname}'),
+            types.InlineKeyboardButton("📜 " + t(rid, 'logs'), callback_data=f'logs_{owner_id}_{fname}')
         )
     else:
         markup.row(
-            types.InlineKeyboardButton("🟢 " + t(rid, 'start'), callback_data=f'start_{script_owner_id}_{file_name}'),
-            types.InlineKeyboardButton("🗑️ " + t(rid, 'delete'), callback_data=f'delete_{script_owner_id}_{file_name}')
+            types.InlineKeyboardButton("🟢 " + t(rid, 'start'), callback_data=f'start_{owner_id}_{fname}'),
+            types.InlineKeyboardButton("🗑️ " + t(rid, 'delete'), callback_data=f'delete_{owner_id}_{fname}')
         )
         markup.row(
-            types.InlineKeyboardButton("📜 " + t(rid, 'view_logs'), callback_data=f'logs_{script_owner_id}_{file_name}')
+            types.InlineKeyboardButton("📜 " + t(rid, 'view_logs'), callback_data=f'logs_{owner_id}_{fname}')
         )
-    markup.add(types.InlineKeyboardButton("🔙 " + t(rid, 'back_to_files'), callback_data='check_files'))
+    auto = "🔄✅" if auto_restart_enabled.get(sk, False) else "🔄❌"
+    lock = "🔒" if is_locked else "🔓"
+    markup.row(
+        types.InlineKeyboardButton("📊 İstatistik", callback_data=f'stats_file_{owner_id}_{fname}'),
+        types.InlineKeyboardButton(auto + " Auto", callback_data=f'toggle_autorestart_{owner_id}_{fname}')
+    )
+    markup.row(
+        types.InlineKeyboardButton("⬇️ Log İndir", callback_data=f'dl_log_{owner_id}_{fname}'),
+        types.InlineKeyboardButton(lock + " Kilit", callback_data=f'toggle_lock_{owner_id}_{fname}')
+    )
+    markup.row(
+        types.InlineKeyboardButton("📝 Not", callback_data=f'note_{owner_id}_{fname}')
+    )
+    markup.add(types.InlineKeyboardButton("🔙 Geri", callback_data='check_files'))
     return markup
 
 def create_admin_panel(user_id):
-    markup = types.InlineKeyboardMarkup(row_width=2)
-    markup.row(
+    m = types.InlineKeyboardMarkup(row_width=2)
+    m.row(
         types.InlineKeyboardButton('➕ Admin Ekle', callback_data='add_admin'),
         types.InlineKeyboardButton('➖ Admin Sil', callback_data='remove_admin')
     )
-    markup.row(types.InlineKeyboardButton('📋 Admin Listesi', callback_data='list_admins'))
-    markup.row(types.InlineKeyboardButton('📋 Bekleyen Onaylar', callback_data='pending_list'))
-    markup.row(types.InlineKeyboardButton('🔙 ' + t(user_id, 'back_to_main'), callback_data='back_to_main'))
-    return markup
+    m.row(types.InlineKeyboardButton('📋 Admin Listesi', callback_data='list_admins'))
+    m.row(
+        types.InlineKeyboardButton("🧹 Temizlik", callback_data='cleanup_now'),
+        types.InlineKeyboardButton("🔥 Kaynak Düşür", callback_data='reduce_now')
+    )
+    m.row(types.InlineKeyboardButton("📥 Tüm .py ZIP", callback_data='bulk_download'))
+    m.row(types.InlineKeyboardButton('🔙 Geri', callback_data='back_to_main'))
+    return m
 
 def create_subscription_menu(user_id):
-    markup = types.InlineKeyboardMarkup(row_width=2)
-    markup.row(
-        types.InlineKeyboardButton('➕ Abonelik Ekle', callback_data='add_subscription'),
-        types.InlineKeyboardButton('➖ Abonelik Sil', callback_data='remove_subscription')
+    m = types.InlineKeyboardMarkup(row_width=2)
+    m.row(
+        types.InlineKeyboardButton('➕ Ekle', callback_data='add_subscription'),
+        types.InlineKeyboardButton('➖ Sil', callback_data='remove_subscription')
     )
-    markup.row(types.InlineKeyboardButton('🔍 Abonelik Sorgula', callback_data='check_subscription'))
-    markup.row(types.InlineKeyboardButton('🔙 ' + t(user_id, 'back_to_main'), callback_data='back_to_main'))
-    return markup
-
-def create_lang_menu():
-    markup = types.InlineKeyboardMarkup(row_width=2)
-    markup.row(
-        types.InlineKeyboardButton("🇹🇷 Türkçe", callback_data='setlang_tr'),
-        types.InlineKeyboardButton("🇬🇧 English", callback_data='setlang_en')
-    )
-    markup.row(
-        types.InlineKeyboardButton("🇷🇺 Русский", callback_data='setlang_ru'),
-        types.InlineKeyboardButton("🇸🇦 العربية", callback_data='setlang_ar')
-    )
-    markup.row(types.InlineKeyboardButton("🇮🇳 हिन्दी", callback_data='setlang_hi'))
-    markup.row(types.InlineKeyboardButton("🔙 Geri", callback_data='back_to_main'))
-    return markup
+    m.row(types.InlineKeyboardButton('🔍 Sorgula', callback_data='check_subscription'))
+    m.row(types.InlineKeyboardButton('🔙 Geri', callback_data='back_to_main'))
+    return m
 
 # ================== ADMIN ONAY SİSTEMİ ==================
 def request_approval(user_id, file_path, file_name, file_type, message):
     with approvals_lock:
         approval_counter[0] += 1
-        approval_id = approval_counter[0]
-        pending_approvals[approval_id] = {
-            'user_id': user_id,
-            'file_path': file_path,
-            'file_name': file_name,
-            'file_type': file_type,
-            'user_folder': os.path.dirname(file_path),
-            'chat_id': message.chat.id,
-            'created_at': datetime.now(),
+        aid = approval_counter[0]
+        pending_approvals[aid] = {
+            'user_id': user_id, 'file_path': file_path, 'file_name': file_name,
+            'file_type': file_type, 'user_folder': os.path.dirname(file_path),
+            'chat_id': message.chat.id, 'created_at': datetime.now(),
             'message_id': message.message_id,
         }
-
-    user_name = message.from_user.first_name
-    user_username = message.from_user.username or "Yok"
-
-    bot.reply_to(message, t(user_id, 'pending_approval'), parse_mode='Markdown')
-
+    uname = message.from_user.first_name
+    uusername = message.from_user.username or "Yok"
+    bot.reply_to(message,
+        "🎯 Dosyanız başarıyla alındı! Şimdi adminlerimizin incelemesinden geçecek.\n\n"
+        "⏳ Onay süresi: 15 dakika\n"
+        "✅ Onaylanınca otomatik olarak başlatılacak\n"
+        "❌ Reddedilirse dosya silinecek\n\n"
+        "Sabırla bekleyin, kısa sürede sonuçlanacak! 🙏", parse_mode='Markdown')
     markup = types.InlineKeyboardMarkup(row_width=2)
     markup.row(
-        types.InlineKeyboardButton(t(OWNER_ID, 'approve') + f" #{approval_id}", callback_data=f'approve_{approval_id}'),
-        types.InlineKeyboardButton(t(OWNER_ID, 'reject') + f" #{approval_id}", callback_data=f'reject_{approval_id}')
+        types.InlineKeyboardButton(t(OWNER_ID, 'approve') + f" #{aid}", callback_data=f'approve_{aid}'),
+        types.InlineKeyboardButton(t(OWNER_ID, 'reject') + f" #{aid}", callback_data=f'reject_{aid}')
     )
-
-    approval_text = (
+    text = (
         f"🔔 <b>{t(OWNER_ID, 'new_file_approval')}</b>\n\n"
-        f"👤 Kullanıcı: <b>{user_name}</b>\n"
+        f"👤 Kullanıcı: <b>{uname}</b>\n"
         f"🆔 ID: <code>{user_id}</code>\n"
-        f"📛 Kullanıcı Adı: @{user_username}\n"
-        f"📄 Dosya: <code>{file_name}</code>\n"
+        f"📛 @{uusername}\n"
+        f"📄 <code>{file_name}</code>\n"
         f"📦 Tür: <b>{file_type.upper()}</b>\n"
-        f"🔢 Onay ID: <b>#{approval_id}</b>\n\n"
-        f"Onaylıyor musun?"
+        f"🔢 Onay ID: <b>#{aid}</b>\n"
+        f"⏱ Geçerlilik: <b>{APPROVAL_TTL_MINUTES} dakika</b>\n\n"
+        f"Onaylıyor musun? 🤔"
     )
-
-    for admin_id in list(admin_ids):
+    for adm in list(admin_ids):
         try:
             try:
                 with open(file_path, 'rb') as f:
-                    bot.send_document(admin_id, f, caption=approval_text,
-                                      reply_markup=markup, parse_mode='HTML')
-            except Exception:
-                bot.send_message(admin_id, approval_text, reply_markup=markup, parse_mode='HTML')
+                    bot.send_document(adm, f, caption=text, reply_markup=markup, parse_mode='HTML')
+            except:
+                bot.send_message(adm, text, reply_markup=markup, parse_mode='HTML')
         except Exception as e:
-            logger.error(f"Admin {admin_id} onay mesajı gönderilemedi: {e}")
+            logger.error(f"approval admin {adm}: {e}")
 
 def handle_approve(call):
-    try:
-        approval_id = int(call.data.split('_')[1])
-    except (ValueError, IndexError):
-        bot.answer_callback_query(call.id, "Geçersiz onay ID.", show_alert=True); return
-
+    try: aid = int(call.data.split('_')[1])
+    except: bot.answer_callback_query(call.id, "Geçersiz."); return
     if call.from_user.id not in admin_ids:
         bot.answer_callback_query(call.id, t(call.from_user.id, 'admin_required'), show_alert=True); return
-
     with approvals_lock:
-        info = pending_approvals.get(approval_id)
+        info = pending_approvals.pop(aid, None)
         if not info:
-            bot.answer_callback_query(call.id, t(call.from_user.id, 'already_processed'), show_alert=True)
-            return
-        del pending_approvals[approval_id]
-
-    bot.answer_callback_query(call.id, t(call.from_user.id, 'file_approved_admin'))
-    user_id = info['user_id']
-    file_path = info['file_path']
-    file_name = info['file_name']
-    file_type = info['file_type']
-    user_folder = info['user_folder']
-    user_chat_id = info['chat_id']
-
+            bot.answer_callback_query(call.id, t(call.from_user.id, 'already_processed'), show_alert=True); return
+    bot.answer_callback_query(call.id, "✅ Onaylandı!")
+    uid = info['user_id']; fp = info['file_path']; fn = info['file_name']
+    ft = info['file_type']; uf = info['user_folder']; uchat = info['chat_id']
     try:
         bot.edit_message_caption(
-            caption=f"✅ <b>ONAYLANDI</b> - Dosya: <code>{file_name}</code>\nKullanıcı: <code>{user_id}</code>",
-            chat_id=call.message.chat.id, message_id=call.message.message_id, parse_mode='HTML'
-        )
-    except Exception:
+            caption=f"✅ <b>ONAYLANDI</b> - <code>{fn}</code> | User: <code>{uid}</code>",
+            chat_id=call.message.chat.id, message_id=call.message.message_id, parse_mode='HTML')
+    except:
         try: bot.edit_message_reply_markup(call.message.chat.id, call.message.message_id, reply_markup=None)
-        except Exception: pass
-
+        except: pass
     try:
-        bot.send_message(user_chat_id, t(user_id, 'approved'))
-    except Exception: pass
-
-    class FakeMessage:
-        def __init__(self, chat_id):
-            self.chat = type('obj', (object,), {'id': chat_id})()
-    fake = FakeMessage(user_chat_id)
-    threading.Thread(target=run_script,
-                     args=(file_path, user_id, user_folder, file_name, fake),
-                     daemon=True).start()
+        bot.send_message(uchat, "🎉 MÜJDE! Dosyanız admin tarafından onaylandı!\n\n"
+                                 "🚀 Botunuz şimdi başlatılıyor. Birazdan çalışmaya başlayacak.\n\n"
+                                 "📢 Kanal: " + FORCED_CHANNEL + "\n"
+                                 "💬 Destek: " + SUPPORT_USERNAME)
+    except: pass
+    save_user_file(uid, fn, ft)
+    class FM:
+        def __init__(s, c): s.chat = type('obj', (object,), {'id': c})()
+    threading.Thread(target=run_script, args=(fp, uid, uf, fn, FM(uchat)), daemon=True).start()
 
 def handle_reject(call):
-    try:
-        approval_id = int(call.data.split('_')[1])
-    except (ValueError, IndexError):
-        bot.answer_callback_query(call.id, "Geçersiz onay ID.", show_alert=True); return
-
+    try: aid = int(call.data.split('_')[1])
+    except: bot.answer_callback_query(call.id, "Geçersiz."); return
     if call.from_user.id not in admin_ids:
         bot.answer_callback_query(call.id, t(call.from_user.id, 'admin_required'), show_alert=True); return
-
     with approvals_lock:
-        info = pending_approvals.get(approval_id)
+        info = pending_approvals.pop(aid, None)
         if not info:
-            bot.answer_callback_query(call.id, t(call.from_user.id, 'already_processed'), show_alert=True)
-            return
-        del pending_approvals[approval_id]
-
-    bot.answer_callback_query(call.id, t(call.from_user.id, 'file_rejected_admin'))
-    user_id = info['user_id']
-    file_path = info['file_path']
-    file_name = info['file_name']
-    user_chat_id = info['chat_id']
-
+            bot.answer_callback_query(call.id, "İşlendi."); return
+    bot.answer_callback_query(call.id, "❌ Reddedildi.")
+    uid = info['user_id']; fp = info['file_path']; fn = info['file_name']; uchat = info['chat_id']
     try:
-        if os.path.exists(file_path):
-            os.remove(file_path)
-        parent_dir = os.path.dirname(file_path)
-        if os.path.isdir(parent_dir) and not os.listdir(parent_dir):
-            shutil.rmtree(parent_dir, ignore_errors=True)
-    except Exception as e:
-        logger.error(f"Red sonrası dosya silme hatası: {e}")
-    remove_user_file_db(user_id, file_name)
-
+        if os.path.exists(fp): os.remove(fp)
+    except: pass
+    remove_user_file_db(uid, fn)
     try:
         bot.edit_message_caption(
-            caption=f"❌ <b>REDDEDİLDİ</b> - Dosya: <code>{file_name}</code>\nKullanıcı: <code>{user_id}</code>",
-            chat_id=call.message.chat.id, message_id=call.message.message_id, parse_mode='HTML'
-        )
-    except Exception:
+            caption=f"❌ <b>REDDEDİLDİ</b> - <code>{fn}</code> | User: <code>{uid}</code>",
+            chat_id=call.message.chat.id, message_id=call.message.message_id, parse_mode='HTML')
+    except:
         try: bot.edit_message_reply_markup(call.message.chat.id, call.message.message_id, reply_markup=None)
-        except Exception: pass
-
+        except: pass
     try:
-        bot.send_message(user_chat_id, t(user_id, 'rejected'))
-    except Exception: pass
+        bot.send_message(uchat, "😔 Maalesef dosyanız admin tarafından reddedildi.\n\n"
+                                 "Sebebini öğrenmek için desteğe yazabilirsiniz: " + SUPPORT_USERNAME)
+    except: pass
 
-# ================== ZIP İŞLEME ==================
-def handle_zip_file(downloaded_file_content, file_name_zip, message):
-    user_id = message.from_user.id
-    user_folder = get_user_folder(user_id)
-    temp_dir = None
-    try:
-        temp_dir = tempfile.mkdtemp(prefix=f"user_{user_id}_zip_")
-        zip_path = os.path.join(temp_dir, file_name_zip)
-        with open(zip_path, 'wb') as new_file:
-            new_file.write(downloaded_file_content)
-
-        with zipfile.ZipFile(zip_path, 'r') as zip_ref:
-            for member in zip_ref.infolist():
-                member_path = os.path.abspath(os.path.join(temp_dir, member.filename))
-                if not member_path.startswith(os.path.abspath(temp_dir) + os.sep) and member_path != os.path.abspath(temp_dir):
-                    raise zipfile.BadZipFile(f"Güvenli olmayan zip yolu: {member.filename}")
-            zip_ref.extractall(temp_dir)
-
-        extracted_items = os.listdir(temp_dir)
-        py_files = [f for f in extracted_items if f.endswith('.py')]
-        req_file = 'requirements.txt' if 'requirements.txt' in extracted_items else None
-
-        if not py_files and not req_file:
-            bot.reply_to(message, "❌ Arşivde `.py` dosyası bulunamadı!"); return
-
-        if req_file:
-            req_path = os.path.join(temp_dir, req_file)
-            bot.reply_to(message, f"📦 `{req_file}` yükleniyor...")
-            try:
-                result = subprocess.run([sys.executable, '-m', 'pip', 'install', '-r', req_path],
-                                       capture_output=True, text=True, check=True,
-                                       encoding='utf-8', errors='ignore', timeout=300)
-                bot.reply_to(message, f"✅ `{req_file}` yüklendi.")
-            except subprocess.TimeoutExpired:
-                bot.reply_to(message, f"⏱ `{req_file}` zaman aşımı, devam ediliyor...")
-            except Exception as e:
-                bot.reply_to(message, f"⚠️ `{req_file}` kısmen yüklenemedi: {str(e)[:200]}")
-
-        main_script_name = None
-        preferred_py = ['main.py', 'bot.py', 'app.py']
-        for p in preferred_py:
-            if p in py_files:
-                main_script_name = p; break
-        if not main_script_name and py_files:
-            main_script_name = py_files[0]
-
-        if not main_script_name:
-            bot.reply_to(message, "❌ Ana script belirlenemedi!"); return
-
-        for item_name in os.listdir(temp_dir):
-            src_path = os.path.join(temp_dir, item_name)
-            dest_path = os.path.join(user_folder, item_name)
-            if os.path.isdir(dest_path): shutil.rmtree(dest_path)
-            elif os.path.exists(dest_path): os.remove(dest_path)
-            shutil.move(src_path, dest_path)
-
-        save_user_file(user_id, main_script_name, 'py')
-        main_script_path = os.path.join(user_folder, main_script_name)
-
-        bot.reply_to(message, f"📦 Arşiv çıkarıldı. Ana script: `{main_script_name}`\nAdmin onayına gönderiliyor...",
-                     parse_mode='Markdown')
-
-        request_approval(user_id, main_script_path, main_script_name, 'py', message)
-
-    except zipfile.BadZipFile as e:
-        bot.reply_to(message, f"❌ Hata: Geçersiz/bozuk ZIP. {e}")
-    except Exception as e:
-        logger.error(f"Zip işleme hatası {user_id}: {e}", exc_info=True)
-        bot.reply_to(message, f"❌ Zip hatası: {str(e)}")
-    finally:
-        if temp_dir and os.path.exists(temp_dir):
-            try: shutil.rmtree(temp_dir)
-            except Exception: pass
-
-# ================== MESAJ İŞLEYİCİLERİ ==================
-def _logic_send_welcome(message):
-    user_id = message.from_user.id
-    chat_id = message.chat.id
-    user_name = message.from_user.first_name
-    user_username = message.from_user.username
-
-    logger.info(f"Karşılama: user_id={user_id}")
-
-    if bot_locked and user_id not in admin_ids:
-        bot.send_message(chat_id, t(user_id, 'bot_locked'))
-        return
-
-    user_bio = "Bio alınamadı"; photo_file_id = None
-    try: user_bio = bot.get_chat(user_id).bio or "Bio yok"
-    except Exception: pass
-    try:
-        user_profile_photos = bot.get_user_profile_photos(user_id, limit=1)
-        if user_profile_photos.photos:
-            photo_file_id = user_profile_photos.photos[0][-1].file_id
-    except Exception: pass
-
-    if user_id not in active_users:
-        add_active_user(user_id)
+# ================== 3 SAATTE IDLE CHECK ==================
+def idle_check_worker():
+    """Her 3 saatte bir aktif kullanıcılara 'ordamisiniz?' sorar."""
+    while True:
         try:
-            owner_notification = (f"🆕 Yeni kullanıcı!\nAd: {user_name}\nKullanıcı: @{user_username or 'N/A'}\n"
-                                  f"ID: `{user_id}`\nBio: {user_bio}")
-            bot.send_message(OWNER_ID, owner_notification, parse_mode='Markdown')
-            if photo_file_id: bot.send_photo(OWNER_ID, photo_file_id, caption=f"Yeni kullanıcı fotoğrafı {user_id}")
-        except Exception as e: logger.error(f"Owner bildirim hatası: {e}")
+            time.sleep(3 * 3600)  # 3 saat
+            if not idle_check_enabled[0]: continue
+            now = datetime.now()
+            for uid in list(active_users):
+                if uid in admin_ids: continue
+                last = last_active.get(uid, BOT_START_TIME)
+                # Son 3 saatte aktif değilse mesaj at
+                if (now - last).total_seconds() > 3*3600:
+                    markup = types.InlineKeyboardMarkup()
+                    markup.add(types.InlineKeyboardButton("✅ Evet, burdayım!", callback_data='im_here'))
+                    try:
+                        bot.send_message(uid,
+                            f"👋 Merhaba! Sizi bir süredir aktif göremedim ve açıkçası biraz merak ettim. "
+                            f"Her şey yolunda mı? 🤗\n\n"
+                            f"Eğer buradaysanız lütfen aşağıdaki butona tıklayın, "
+                            f"hem sizinle ilgilenelim hem de sistem sizi aktif olarak işaretlesin.\n\n"
+                            f"💙 Sizi aramızda görmek çok güzel!",
+                            reply_markup=markup)
+                    except: pass
+        except Exception as e:
+            logger.error(f"idle_check: {e}")
 
-    file_limit = get_user_file_limit(user_id)
-    current_files = get_user_file_count(user_id)
-    limit_str = str(file_limit) if file_limit != float('inf') else "Sınırsız"
-    expiry_info = ""
-    if user_id == OWNER_ID: user_status = "Sahip"
-    elif user_id in admin_ids: user_status = "Admin"
-    elif user_id in user_subscriptions:
-        expiry_date = user_subscriptions[user_id].get('expiry')
-        if expiry_date and expiry_date > datetime.now():
-            user_status = "Premium"; days_left = (expiry_date - datetime.now()).days
-            expiry_info = f"\nAbonelik bitiş: {days_left} gün"
-        else: user_status = "Ücretsiz (Süresi dolmuş)"; remove_subscription_db(user_id)
-    else: user_status = "Ücretsiz"
+# ================== TTL + WATCHDOG ==================
+def approval_cleanup_worker():
+    while True:
+        try:
+            now = datetime.now()
+            expired = []
+            with approvals_lock:
+                for aid, info in list(pending_approvals.items()):
+                    if (now - info['created_at']).total_seconds()/60 >= APPROVAL_TTL_MINUTES:
+                        expired.append(aid)
+            for aid in expired:
+                with approvals_lock:
+                    info = pending_approvals.pop(aid, None)
+                if not info: continue
+                try:
+                    if os.path.exists(info['file_path']): os.remove(info['file_path'])
+                    try:
+                        bot.send_message(info['chat_id'],
+                            f"⏰ Onay süresi doldu! `{info['file_name']}` otomatik silindi.",
+                            parse_mode='Markdown')
+                    except: pass
+                    for adm in list(admin_ids):
+                        try: bot.send_message(adm, f"⏰ Onay #{aid} süresi doldu.")
+                        except: pass
+                except Exception as e: logger.error(f"TTL: {e}")
+        except Exception as e: logger.error(f"cleanup_worker: {e}")
+        time.sleep(60)
 
-    welcome_msg_text = (
-        f"{t(user_id, 'welcome', name=user_name)}\n\n"
-        f"{t(user_id, 'your_id')}: `{user_id}`\n"
-        f"{t(user_id, 'username')}: `@{user_username or 'Yok'}`\n"
-        f"{t(user_id, 'your_status')}: {user_status}{expiry_info}\n"
-        f"{t(user_id, 'files_uploaded')}: {current_files} / {limit_str}\n\n"
-        f"📢 Zorunlu kanal: {FORCED_CHANNEL}\n"
-        f"💬 Destek: {SUPPORT_USERNAME}\n\n"
-        f"📌 Sadece `.py` ve `.zip` dosyaları kabul edilir.\n"
-        f"⚠️ Tüm `.py` dosyaları **admin onayı** sonrası çalışır."
+def watchdog_worker():
+    while True:
+        try:
+            time.sleep(30)
+            for sk, info in list(bot_scripts.items()):
+                try:
+                    proc = info.get('process')
+                    if not proc: continue
+                    if proc.poll() is not None:
+                        oid = info.get('script_owner_id'); fn = info.get('file_name')
+                        file_stats.setdefault(sk, {'restarts':0, 'crashes':0})
+                        file_stats[sk]['crashes'] += 1
+                        if 'log_file' in info and hasattr(info['log_file'], 'close') and not info['log_file'].closed:
+                            try: info['log_file'].close()
+                            except: pass
+                        bot_scripts.pop(sk, None)
+                        if auto_restart_enabled.get(sk, False):
+                            fp = os.path.join(info.get('user_folder',''), fn)
+                            if os.path.exists(fp):
+                                file_stats[sk]['restarts'] += 1
+                                class FM:
+                                    def __init__(s, c): s.chat = type('obj', (object,), {'id': c})()
+                                try:
+                                    bot.send_message(oid,
+                                        f"🔄 `{fn}` çöktü, otomatik yeniden başlatılıyor...",
+                                        parse_mode='Markdown')
+                                except: pass
+                                threading.Thread(target=run_script,
+                                    args=(fp, oid, info['user_folder'], fn, FM(info.get('chat_id', oid))),
+                                    daemon=True).start()
+                except Exception as e: logger.error(f"watchdog {sk}: {e}")
+        except Exception as e: logger.error(f"watchdog: {e}")
+
+def auto_cleanup_worker():
+    """Her 30 dakikada otomatik çöp temizleme."""
+    while True:
+        try:
+            time.sleep(1800)
+            cleanup_garbage()
+            force_reduce_resources()
+        except Exception as e: logger.error(f"auto_cleanup: {e}")
+
+def resource_monitor_worker():
+    """Her 60 sn CPU/RAM kontrol, yüksekse admin uyar."""
+    while True:
+        try:
+            time.sleep(60)
+            s = get_system_stats()
+            if not s: continue
+            for adm in list(admin_ids):
+                if s['cpu'] > CPU_LIMIT_PERCENT:
+                    key = f"cpu_{adm}_{int(time.time()/300)}"
+                    if key not in resource_alerts_sent:
+                        resource_alerts_sent.add(key)
+                        try:
+                            bot.send_message(adm,
+                                f"⚠️ **CPU UYARISI**\n\n"
+                                f"🔥 CPU: `{s['cpu']:.1f}%` (limit: %{CPU_LIMIT_PERCENT})\n"
+                                f"Otomatik temizlik yapılıyor...",
+                                parse_mode='Markdown')
+                        except: pass
+                if s['ram_percent'] > RAM_LIMIT_PERCENT:
+                    key = f"ram_{adm}_{int(time.time()/300)}"
+                    if key not in resource_alerts_sent:
+                        resource_alerts_sent.add(key)
+                        try:
+                            bot.send_message(adm,
+                                f"⚠️ **RAM UYARISI**\n\n"
+                                f"🔥 RAM: `{s['ram_percent']:.1f}%` (limit: %{RAM_LIMIT_PERCENT})",
+                                parse_mode='Markdown')
+                        except: pass
+            # eski alert keyleri temizle
+            if len(resource_alerts_sent) > 500:
+                resource_alerts_sent.clear()
+        except Exception as e: logger.error(f"resource_monitor: {e}")
+
+# ================== İSTATİSTİK FONKSİYONLARI ==================
+def get_uptime():
+    u = datetime.now() - BOT_START_TIME
+    d = u.days
+    h, r = divmod(u.seconds, 3600)
+    m, s = divmod(r, 60)
+    return f"{d}g {h}s {m}d {s}sn"
+
+# ================== ZIP ==================
+def handle_zip_file(content, fname, message):
+    uid = message.from_user.id
+    ufolder = get_user_folder(uid)
+    tmp = None
+    try:
+        tmp = tempfile.mkdtemp(prefix=f"user_{uid}_zip_")
+        zp = os.path.join(tmp, fname)
+        with open(zp, 'wb') as f: f.write(content)
+        with zipfile.ZipFile(zp, 'r') as z:
+            for m in z.infolist():
+                if not os.path.abspath(os.path.join(tmp, m.filename)).startswith(os.path.abspath(tmp) + os.sep):
+                    raise zipfile.BadZipFile("Güvenlik: yolu kötü")
+            z.extractall(tmp)
+        items = os.listdir(tmp)
+        pyf = [x for x in items if x.endswith('.py')]
+        req = 'requirements.txt' if 'requirements.txt' in items else None
+        if not pyf and not req:
+            bot.reply_to(message, "❌ `.py` yok!"); return
+        if req:
+            try:
+                bot.reply_to(message, f"📦 `requirements.txt` yükleniyor...")
+                venv_python = ensure_user_venv(uid)
+                subprocess.run([venv_python, '-m', 'pip', 'install', '-r', os.path.join(tmp, req)],
+                              capture_output=True, timeout=300, text=True, errors='ignore')
+                bot.reply_to(message, "✅ Bağımlılıklar kuruldu.")
+            except: pass
+        main = None
+        for p in ['main.py', 'bot.py', 'app.py']:
+            if p in pyf: main = p; break
+        if not main and pyf: main = pyf[0]
+        if not main:
+            bot.reply_to(message, "❌ Ana script yok!"); return
+        for x in items:
+            src = os.path.join(tmp, x); dst = os.path.join(ufolder, x)
+            if os.path.isdir(dst): shutil.rmtree(dst)
+            elif os.path.exists(dst): os.remove(dst)
+            shutil.move(src, dst)
+        bot.reply_to(message, f"📦 Arşiv açıldı. Ana: `{main}`\n⏳ Admin onayına gönderiliyor...", parse_mode='Markdown')
+        request_approval(uid, os.path.join(ufolder, main), main, 'py', message)
+    except zipfile.BadZipFile as e:
+        bot.reply_to(message, f"❌ Bozuk ZIP: {e}")
+    except Exception as e:
+        logger.error(f"zip: {e}", exc_info=True)
+        bot.reply_to(message, f"❌ Hata: {e}")
+    finally:
+        if tmp and os.path.exists(tmp): shutil.rmtree(tmp, ignore_errors=True)
+
+# ================== BULK DOWNLOAD (Toplu .py ZIP) ==================
+def build_bulk_zip(user_id=None):
+    """Tüm kullanıcının (veya admin için tüm sistemin) .py dosyalarını ZIP yapar."""
+    try:
+        tmp = tempfile.mkdtemp(prefix="bulk_download_")
+        zp = os.path.join(tmp, 'all_py_files.zip')
+        count = 0
+        with zipfile.ZipFile(zp, 'w', zipfile.ZIP_DEFLATED) as z:
+            if user_id is None:
+                # tüm sistem
+                for uid, files in user_files.items():
+                    for fn, ft in files:
+                        if ft != 'py': continue
+                        p = os.path.join(get_user_folder(uid), fn)
+                        if os.path.exists(p):
+                            z.write(p, arcname=f"user_{uid}/{fn}")
+                            count += 1
+            else:
+                for fn, ft in user_files.get(user_id, []):
+                    if ft != 'py': continue
+                    p = os.path.join(get_user_folder(user_id), fn)
+                    if os.path.exists(p):
+                        z.write(p, arcname=fn)
+                        count += 1
+        if count == 0:
+            shutil.rmtree(tmp, ignore_errors=True)
+            return None, 0
+        return zp, count
+    except Exception as e:
+        logger.error(f"bulk_zip: {e}")
+        return None, 0
+
+# ================== HANDLERS ==================
+def _logic_send_welcome(message):
+    uid = message.from_user.id
+    cid = message.chat.id
+    if bot_locked and uid not in admin_ids:
+        bot.send_message(cid, t(uid, 'bot_locked')); return
+    last_active[uid] = datetime.now()
+    if uid not in active_users:
+        add_active_user(uid)
+        try:
+            bot.send_message(OWNER_ID,
+                f"🆕 **Yeni Kullanıcı!**\n\nAd: {message.from_user.first_name}\n"
+                f"ID: `{uid}`\nKullanıcı: @{message.from_user.username or 'Yok'}",
+                parse_mode='Markdown')
+        except: pass
+    fl = get_user_file_limit(uid)
+    cf = get_user_file_count(uid)
+    ls = str(fl) if fl != float('inf') else "Sınırsız"
+    if uid == OWNER_ID: st = "👑 Sahip"
+    elif uid in admin_ids: st = "🛡 Admin"
+    elif uid in user_subscriptions and user_subscriptions[uid].get('expiry', datetime.min) > datetime.now():
+        st = "💎 Premium"
+    else: st = "🆓 Ücretsiz"
+    s = get_system_stats()
+    cpu_e = "🟢" if s.get('cpu',0) < 50 else "🟡" if s.get('cpu',0) < 80 else "🔴"
+    welcome = (
+        f"🌟 **Merhaba {message.from_user.first_name}, hoş geldiniz!** 🌟\n\n"
+        f"Sizi burada görmekten gerçekten çok mutluyum! 💙\n"
+        f"Bugün sizi aramızda görmek beni çok memnun etti. "
+        f"Umarım burada güzel vakit geçirir ve ihtiyacınız olan her şeyi bulursunuz.\n\n"
+        f"━━━━━━━━━━━━━━━━━━━━\n"
+        f"👤 **ID:** `{uid}`\n"
+        f"📛 **Kullanıcı:** @{message.from_user.username or 'Yok'}\n"
+        f"🎖️ **Durum:** {st}\n"
+        f"📁 **Dosyalar:** {cf} / {ls}\n"
+        f"{cpu_e} **CPU:** `{s.get('cpu', 0):.1f}%` | RAM: `{s.get('ram_percent', 0):.1f}%`\n"
+        f"━━━━━━━━━━━━━━━━━━━━\n\n"
+        f"📢 **Kanal:** {FORCED_CHANNEL}\n"
+        f"💬 **Destek:** {SUPPORT_USERNAME}\n\n"
+        f"⚠️ **Önemli:** Tüm `.py` dosyaları **admin onayı** sonrası çalışır.\n"
+        f"🐍 Her bot **kendi sanal ortamında** çalışır (izole & güvenli).\n\n"
+        f"Ne yapmak istersiniz? Aşağıdaki menüden seçin 👇"
     )
     try:
-        if photo_file_id: bot.send_photo(chat_id, photo_file_id)
-        bot.send_message(chat_id, welcome_msg_text,
-                         reply_markup=create_main_menu_inline(user_id), parse_mode='Markdown')
+        bot.send_message(cid, welcome, reply_markup=create_main_menu_inline(uid), parse_mode='Markdown')
     except Exception as e:
-        logger.error(f"Karşılama hatası {user_id}: {e}", exc_info=True)
-
-def _logic_updates_channel(message):
-    user_id = message.from_user.id
-    markup = types.InlineKeyboardMarkup()
-    markup.add(types.InlineKeyboardButton('📢 ' + t(user_id, 'updates_channel'), url=UPDATE_CHANNEL))
-    bot.reply_to(message, f"Zorunlu kanalımıza katıl:\n{UPDATE_CHANNEL}\n\nDestek: {SUPPORT_USERNAME}",
-                 reply_markup=markup)
-
-def _logic_upload_file(message):
-    user_id = message.from_user.id
-    if bot_locked and user_id not in admin_ids:
-        bot.reply_to(message, t(user_id, 'bot_locked')); return
-    file_limit = get_user_file_limit(user_id)
-    current_files = get_user_file_count(user_id)
-    if current_files >= file_limit:
-        limit_str = str(file_limit) if file_limit != float('inf') else "Sınırsız"
-        bot.reply_to(message, t(user_id, 'file_limit_reached', current=current_files, limit=limit_str)); return
-    bot.reply_to(message, t(user_id, 'send_file'))
+        logger.error(f"welcome: {e}")
 
 def _logic_check_files(message):
-    user_id = message.from_user.id
-    user_files_list = user_files.get(user_id, [])
-    if not user_files_list:
-        bot.reply_to(message, t(user_id, 'no_files')); return
+    uid = message.from_user.id
+    if not user_files.get(uid):
+        bot.reply_to(message, "📂 Henüz hiç dosya yüklemediniz.\n\n"
+                              "💡 `.py` veya `.zip` dosyası gönderebilirsiniz."); return
     markup = types.InlineKeyboardMarkup(row_width=1)
-    for file_name, file_type in sorted(user_files_list):
-        is_running = is_bot_running(user_id, file_name)
-        pending = any(info['user_id'] == user_id and info['file_name'] == file_name
-                      for info in pending_approvals.values())
-        if pending:
-            status_icon = "⏳ " + t(user_id, 'waiting_approval_short')
-        else:
-            status_icon = "🟢 " + t(user_id, 'running') if is_running else "🔴 " + t(user_id, 'stopped')
-        btn_text = f"{file_name} ({file_type}) - {status_icon}"
-        markup.add(types.InlineKeyboardButton(btn_text, callback_data=f'file_{user_id}_{file_name}'))
-    bot.reply_to(message, t(user_id, 'your_files'), reply_markup=markup, parse_mode='Markdown')
-
-def _logic_bot_speed(message):
-    user_id = message.from_user.id
-    chat_id = message.chat.id
-    start_time_ping = time.time()
-    wait_msg = bot.reply_to(message, "⚡ Hız test ediliyor...")
-    try:
-        bot.send_chat_action(chat_id, 'typing')
-        response_time = round((time.time() - start_time_ping) * 1000, 2)
-        status = "Kilitli değil" if not bot_locked else "Kilitli"
-        if user_id == OWNER_ID: user_level = "Sahip"
-        elif user_id in admin_ids: user_level = "Admin"
-        elif user_id in user_subscriptions and user_subscriptions[user_id].get('expiry', datetime.min) > datetime.now():
-            user_level = "Premium"
-        else: user_level = "Ücretsiz"
-        speed_msg = (f"⚡ Bot Hızı ve Durumu:\n\n"
-                     f"📡 API Yanıt: {response_time} ms\n"
-                     f"🔐 Bot Durumu: {status}\n"
-                     f"👤 Seviyen: {user_level}")
-        bot.edit_message_text(speed_msg, chat_id, wait_msg.message_id)
-    except Exception as e:
-        logger.error(f"Hız testi hatası: {e}", exc_info=True)
-
-def _logic_contact_owner(message):
-    user_id = message.from_user.id
-    markup = types.InlineKeyboardMarkup()
-    markup.add(types.InlineKeyboardButton('📞 ' + t(user_id, 'contact_owner'),
-                                          url=f'https://t.me/{SUPPORT_USERNAME.replace("@", "")}'))
-    bot.reply_to(message, f"Destek: {SUPPORT_USERNAME}\nKanal: {FORCED_CHANNEL}", reply_markup=markup)
+    for fn, ft in sorted(user_files[uid]):
+        is_run = is_bot_running(uid, fn)
+        pending = any(i['user_id'] == uid and i['file_name'] == fn for i in pending_approvals.values())
+        if pending: icon = "⏳ Onay Bekliyor"
+        else: icon = "🟢 Çalışıyor" if is_run else "🔴 Durdu"
+        note_icon = " 📝" if file_notes.get(f"{uid}_{fn}") else ""
+        lock_icon = " 🔒" if file_locks.get(f"{uid}_{fn}", False) else ""
+        markup.add(types.InlineKeyboardButton(f"{fn} ({ft}) - {icon}{note_icon}{lock_icon}",
+                    callback_data=f'file_{uid}_{fn}'))
+    bot.reply_to(message, "📂 **Dosyalarınız:**\n\nYönetmek için tıklayın 👇",
+                 reply_markup=markup, parse_mode='Markdown')
 
 def _logic_uptime(message):
-    uptime_str = get_uptime()
-    bot.reply_to(message, f"⏱ Bot Çalışma Süresi: `{uptime_str}`", parse_mode='Markdown')
-
-def _logic_subscriptions_panel(message):
-    user_id = message.from_user.id
-    if user_id not in admin_ids:
-        bot.reply_to(message, t(user_id, 'admin_required')); return
-    bot.reply_to(message, "💳 Abonelik Yönetimi\nİşlem seç:", reply_markup=create_subscription_menu(user_id))
+    bot.reply_to(message, f"⏱ Bot Çalışma Süresi: `{get_uptime()}`", parse_mode='Markdown')
 
 def _logic_statistics(message):
-    user_id = message.from_user.id
-    total_users = len(active_users)
-    total_files_records = sum(len(files) for files in user_files.values())
-    running_bots_count = 0
-    user_running_bots = 0
-    for script_key_iter, script_info_iter in list(bot_scripts.items()):
-        try:
-            s_owner_id, _ = script_key_iter.split('_', 1)
-            if is_bot_running(int(s_owner_id), script_info_iter['file_name']):
-                running_bots_count += 1
-                if int(s_owner_id) == user_id: user_running_bots += 1
-        except Exception: pass
-
-    pending_count = len(pending_approvals)
-    stats_msg = (f"📊 Bot İstatistikleri:\n\n"
-                 f"👥 Toplam Kullanıcı: {total_users}\n"
-                 f"📁 Toplam Dosya Kaydı: {total_files_records}\n"
-                 f"🤖 Aktif Bot: {running_bots_count}\n"
-                 f"⏳ Bekleyen Onay: {pending_count}\n")
-    if user_id in admin_ids:
-        stats_msg += (f"🔒 Bot Durumu: {'Kilitli' if bot_locked else 'Kilitli değil'}\n"
-                      f"⚙️ Senin Çalışan Botların: {user_running_bots}")
-    else:
-        stats_msg += f"⚙️ Senin Çalışan Botların: {user_running_bots}"
-    bot.reply_to(message, stats_msg)
-
-def _logic_broadcast_init(message):
-    user_id = message.from_user.id
-    if user_id not in admin_ids:
-        bot.reply_to(message, t(user_id, 'admin_required')); return
-    msg = bot.reply_to(message, t(user_id, 'broadcast_prompt'))
-    bot.register_next_step_handler(msg, process_broadcast_message)
-
-def _logic_toggle_lock_bot(message):
-    user_id = message.from_user.id
-    if user_id not in admin_ids:
-        bot.reply_to(message, t(user_id, 'admin_required')); return
-    global bot_locked
-    bot_locked = not bot_locked
-    status = "kilitlendi" if bot_locked else "kilidi açıldı"
-    logger.warning(f"Bot {status} - Admin {user_id}")
-    bot.reply_to(message, f"🔒 Bot {status}.")
-
-def _logic_admin_panel(message):
-    user_id = message.from_user.id
-    if user_id not in admin_ids:
-        bot.reply_to(message, t(user_id, 'admin_required')); return
-    bot.reply_to(message, "👑 Admin Paneli", reply_markup=create_admin_panel(user_id))
-
-def _logic_pending_list(message):
-    user_id = message.from_user.id
-    if user_id not in admin_ids:
-        bot.reply_to(message, t(user_id, 'admin_required')); return
-    if not pending_approvals:
-        bot.reply_to(message, t(user_id, 'no_pending')); return
-
-    for aid, info in list(pending_approvals.items()):
-        row_markup = types.InlineKeyboardMarkup(row_width=2)
-        row_markup.row(
-            types.InlineKeyboardButton(f"✅ #{aid} Onayla", callback_data=f'approve_{aid}'),
-            types.InlineKeyboardButton(f"❌ #{aid} Reddet", callback_data=f'reject_{aid}')
-        )
-        try:
-            bot.send_message(message.chat.id, f"#{aid} - `{info['file_name']}` (User: `{info['user_id']}`)",
-                             reply_markup=row_markup, parse_mode='Markdown')
-        except Exception as e:
-            logger.error(f"Bekleyen onay gönderim hatası: {e}")
-    bot.reply_to(message, f"{t(user_id, 'admin_pending_list')} {len(pending_approvals)} adet")
-
-def _logic_run_all_scripts(message_or_call):
-    if isinstance(message_or_call, telebot.types.Message):
-        admin_user_id = message_or_call.from_user.id
-        admin_chat_id = message_or_call.chat.id
-        reply_func = lambda text, **kwargs: bot.reply_to(message_or_call, text, **kwargs)
-        admin_message_obj_for_script_runner = message_or_call
-    elif isinstance(message_or_call, telebot.types.CallbackQuery):
-        admin_user_id = message_or_call.from_user.id
-        admin_chat_id = message_or_call.message.chat.id
-        bot.answer_callback_query(message_or_call.id)
-        reply_func = lambda text, **kwargs: bot.send_message(admin_chat_id, text, **kwargs)
-        admin_message_obj_for_script_runner = message_or_call.message
-    else:
-        return
-
-    if admin_user_id not in admin_ids:
-        reply_func(t(admin_user_id, 'admin_required')); return
-
-    reply_func("🟢 Tüm kullanıcı scriptleri başlatılıyor...")
-    started_count = 0; attempted_users = 0; skipped_files = 0
-
-    for target_user_id, files_for_user in dict(user_files).items():
-        if not files_for_user: continue
-        attempted_users += 1
-        user_folder = get_user_folder(target_user_id)
-        for file_name, file_type in files_for_user:
-            if file_type != 'py': continue
-            if not is_bot_running(target_user_id, file_name):
-                pending = any(info['user_id'] == target_user_id and info['file_name'] == file_name
-                              for info in pending_approvals.values())
-                if pending:
-                    skipped_files += 1
-                    continue
-                file_path = os.path.join(user_folder, file_name)
-                if os.path.exists(file_path):
-                    try:
-                        threading.Thread(target=run_script,
-                                         args=(file_path, target_user_id, user_folder, file_name,
-                                               admin_message_obj_for_script_runner),
-                                         daemon=True).start()
-                        started_count += 1
-                        time.sleep(0.7)
-                    except Exception:
-                        skipped_files += 1
-                else:
-                    skipped_files += 1
-
-    summary_msg = (f"✅ Tüm Scriptler - Tamamlandı:\n\n"
-                   f"🚀 Başlatılan: {started_count}\n"
-                   f"👥 İşlenen kullanıcı: {attempted_users}\n"
-                   f"⏭️ Atlanan/Hata: {skipped_files}")
-    reply_func(summary_msg)
-
-def get_uptime():
-    uptime = datetime.now() - BOT_START_TIME
-    days = uptime.days
-    hours, remainder = divmod(uptime.seconds, 3600)
-    minutes, seconds = divmod(remainder, 60)
-    return f"{days}g {hours}s {minutes}d {seconds}sn"
-
-# ================== KOMUTLAR ==================
-@bot.message_handler(commands=['mpx'])
-def handle_mpx_command(message):
-    user_id = message.from_user.id
-    if bot_locked and user_id not in admin_ids:
-        bot.reply_to(message, t(user_id, 'bot_locked')); return
-
-    if not message.text or len(message.text.split()) < 2:
-        bot.reply_to(message, "Kullanım: `/mpx sorun nedir?`", parse_mode='Markdown'); return
-
-    query = message.text.split(' ', 1)[1]
-    bot.send_chat_action(message.chat.id, 'typing')
-    try:
-        headers = {"Authorization": f"Bearer {A4F_API_KEY}", "Content-Type": "application/json"}
-        payload = {"model": A4F_MODEL, "messages": [{"role": "user", "content": query}], "temperature": 0.7}
-        response = requests.post(A4F_API_URL, headers=headers, json=payload, timeout=60)
-        response.raise_for_status()
-        result = response.json()
-        answer = result.get('choices', [{}])[0].get('message', {}).get('content', 'API yanıt vermedi')
-        if len(answer) > 4000:
-            for x in range(0, len(answer), 4000):
-                bot.reply_to(message, answer[x:x+4000], parse_mode='Markdown')
-        else:
-            bot.reply_to(message, answer, parse_mode='Markdown')
-    except Exception as e:
-        logger.error(f"MPX AI hatası: {e}")
-        bot.reply_to(message, "API bağlantı hatası. Tekrar dene.")
+    uid = message.from_user.id
+    tu = len(active_users)
+    tf = sum(len(f) for f in user_files.values())
+    rb = sum(1 for k, i in bot_scripts.items() if is_bot_running(i.get('script_owner_id'), i.get('file_name')))
+    my = sum(1 for k, i in bot_scripts.items() if i.get('script_owner_id') == uid and is_bot_running(i.get('script_owner_id'), i.get('file_name')))
+    pend = len(pending_approvals)
+    s = get_system_stats()
+    txt = (
+        f"📊 **İSTATİSTİKLER**\n"
+        f"━━━━━━━━━━━━━━━\n"
+        f"👥 Toplam Kullanıcı: `{tu}`\n"
+        f"📁 Toplam Dosya: `{tf}`\n"
+        f"🤖 Aktif Bot: `{rb}`\n"
+        f"👤 Senin Çalışan: `{my}`\n"
+        f"⏳ Bekleyen Onay: `{pend}`\n"
+        f"💻 CPU: `{s.get('cpu', 0):.1f}%` | RAM: `{s.get('ram_percent', 0):.1f}%`\n"
+        f"⏱ Uptime: `{get_uptime()}`"
+    )
+    bot.reply_to(message, txt, parse_mode='Markdown')
 
 @bot.message_handler(commands=['start', 'help'])
-def command_send_welcome(message): _logic_send_welcome(message)
+def cmd_start(m): _logic_send_welcome(m)
 
-@bot.message_handler(commands=['lang', 'dil'])
-def command_lang(message):
-    bot.reply_to(message, "🌐 Dil seç / Choose language:", reply_markup=create_lang_menu())
+@bot.message_handler(commands=['files'])
+def cmd_files(m): _logic_check_files(m)
 
-@bot.message_handler(commands=['status'])
-def command_show_status(message): _logic_statistics(message)
+@bot.message_handler(commands=['stats'])
+def cmd_stats(m): _logic_statistics(m)
 
 @bot.message_handler(commands=['uptime'])
-def command_uptime(message): _logic_uptime(message)
+def cmd_uptime(m): _logic_uptime(m)
 
-@bot.message_handler(commands=['ping'])
-def ping(message):
-    start_ping_time = time.time()
-    msg = bot.reply_to(message, "Pong!")
-    latency = round((time.time() - start_ping_time) * 1000, 2)
-    uptime_str = get_uptime()
-    bot.edit_message_text(f"🏓 Pong!\nGecikme: {latency} ms\nÇalışma: {uptime_str}",
-                          message.chat.id, msg.message_id)
+@bot.message_handler(commands=['sysinfo'])
+def cmd_sysinfo(m):
+    bot.reply_to(m, format_stats(), parse_mode='Markdown')
 
-@bot.message_handler(commands=['pending', 'bekleyen'])
-def command_pending(message): _logic_pending_list(message)
+@bot.message_handler(commands=['cleanup'])
+def cmd_cleanup(m):
+    if m.from_user.id not in admin_ids:
+        bot.reply_to(m, "Admin gerekli."); return
+    bot.reply_to(m, "🧹 Temizlik başlatılıyor...")
+    freed = cleanup_garbage()
+    bot.reply_to(m, f"✅ **Temizlik tamamlandı!**\n\n"
+                     f"💾 **Serbest kalan:** `{freed/1024/1024:.2f} MB`\n"
+                     f"🔄 GC çalıştırıldı.", parse_mode='Markdown')
+
+@bot.message_handler(commands=['reduce'])
+def cmd_reduce(m):
+    if m.from_user.id not in admin_ids:
+        bot.reply_to(m, "Admin gerekli."); return
+    bot.reply_to(m, "🔥 Kaynaklar zorla düşürülüyor...")
+    force_reduce_resources()
+    s = get_system_stats()
+    bot.reply_to(m, f"✅ Düşürüldü!\n\n"
+                     f"💻 CPU: `{s.get('cpu', 0):.1f}%`\n"
+                     f"🧠 RAM: `{s.get('ram_percent', 0):.1f}%`", parse_mode='Markdown')
+
+@bot.message_handler(commands=['mpx'])
+def cmd_mpx(m):
+    if not m.text or len(m.text.split()) < 2:
+        bot.reply_to(m, "Kullanım: `/mpx sorunuz`", parse_mode='Markdown'); return
+    q = m.text.split(' ', 1)[1]
+    bot.send_chat_action(m.chat.id, 'typing')
+    try:
+        r = requests.post(A4F_API_URL,
+            headers={"Authorization": f"Bearer {A4F_API_KEY}", "Content-Type": "application/json"},
+            json={"model": A4F_MODEL, "messages": [{"role": "user", "content": q}], "temperature": 0.7},
+            timeout=60).json()
+        ans = r.get('choices', [{}])[0].get('message', {}).get('content', 'Yanıt yok')
+        bot.reply_to(m, ans[:4000], parse_mode='Markdown')
+    except Exception as e:
+        bot.reply_to(m, f"API hata: {e}")
 
 # ================== DOSYA YÜKLEME ==================
 @bot.message_handler(content_types=['document'])
-def handle_file_upload_doc(message):
-    user_id = message.from_user.id
-    chat_id = message.chat.id
+def handle_doc(message):
+    uid = message.from_user.id
+    cid = message.chat.id
+    last_active[uid] = datetime.now()
+    if bot_locked and uid not in admin_ids:
+        bot.reply_to(message, t(uid, 'bot_locked')); return
+    fl = get_user_file_limit(uid)
+    cf = get_user_file_count(uid)
+    if cf >= fl:
+        bot.reply_to(message, f"❌ Limit dolu ({cf}/{fl})."); return
     doc = message.document
-    logger.info(f"Belge: {user_id}: {doc.file_name}")
-
-    if bot_locked and user_id not in admin_ids:
-        bot.reply_to(message, t(user_id, 'bot_locked')); return
-
-    file_limit = get_user_file_limit(user_id)
-    current_files = get_user_file_count(user_id)
-    if current_files >= file_limit:
-        limit_str = str(file_limit) if file_limit != float('inf') else "Sınırsız"
-        bot.reply_to(message, t(user_id, 'file_limit_reached', current=current_files, limit=limit_str)); return
-
-    file_name = doc.file_name
-    if not file_name:
-        bot.reply_to(message, "❌ Dosya adı yok."); return
-
-    file_ext = os.path.splitext(file_name)[1].lower()
-    if file_ext not in ['.py', '.zip']:
-        bot.reply_to(message, t(user_id, 'unsupported_type')); return
-
-    max_file_size = 20 * 1024 * 1024
-    if doc.file_size > max_file_size:
-        bot.reply_to(message, t(user_id, 'file_too_large')); return
-
+    fn = doc.file_name
+    if not fn: bot.reply_to(message, "Dosya adı yok."); return
+    ext = os.path.splitext(fn)[1].lower()
+    if ext not in ['.py', '.zip']:
+        bot.reply_to(message, t(uid, 'unsupported_type')); return
+    if doc.file_size > 20*1024*1024:
+        bot.reply_to(message, t(uid, 'file_too_large')); return
     try:
-        try:
-            bot.forward_message(OWNER_ID, chat_id, message.message_id)
-            bot.send_message(OWNER_ID, f"📎 Dosya '{file_name}' - {message.from_user.first_name} (`{user_id}`)",
-                             parse_mode='Markdown')
-        except Exception as e:
-            logger.error(f"Forward hatası: {e}")
-
-        download_wait_msg = bot.reply_to(message, f"📥 `{file_name}` indiriliyor...")
-        file_info_tg_doc = bot.get_file(doc.file_id)
-        downloaded_file_content = bot.download_file(file_info_tg_doc.file_path)
-        bot.edit_message_text(f"📥 `{file_name}` indirildi. İşleniyor...", chat_id, download_wait_msg.message_id)
-        user_folder = get_user_folder(user_id)
-
-        if file_ext == '.zip':
-            handle_zip_file(downloaded_file_content, file_name, message)
+        try: bot.forward_message(OWNER_ID, cid, message.message_id)
+        except: pass
+        wm = bot.reply_to(message, f"📥 `{fn}` indiriliyor...")
+        fi = bot.get_file(doc.file_id)
+        content = bot.download_file(fi.file_path)
+        bot.edit_message_text(f"✅ `{fn}` indirildi. İşleniyor...", cid, wm.message_id)
+        uf = get_user_folder(uid)
+        if ext == '.zip':
+            handle_zip_file(content, fn, message)
         else:
-            file_path = os.path.join(user_folder, file_name)
-            with open(file_path, 'wb') as f:
-                f.write(downloaded_file_content)
-            save_user_file(user_id, file_name, 'py')
-            request_approval(user_id, file_path, file_name, 'py', message)
-
-    except telebot.apihelper.ApiTelegramException as e:
-        logger.error(f"TG API hatası: {e}", exc_info=True)
-        if "file is too big" in str(e).lower():
-            bot.reply_to(message, "❌ Dosya çok büyük (~20MB).")
-        else:
-            bot.reply_to(message, f"❌ Telegram API Hatası: {str(e)}")
+            fp = os.path.join(uf, fn)
+            with open(fp, 'wb') as f: f.write(content)
+            request_approval(uid, fp, fn, 'py', message)
     except Exception as e:
-        logger.error(f"Genel hata: {e}", exc_info=True)
-        bot.reply_to(message, f"❌ Beklenmedik hata: {str(e)}")
+        logger.error(f"doc: {e}", exc_info=True)
+        bot.reply_to(message, f"❌ Hata: {e}")
 
-# ================== CALLBACK İŞLEYİCİLER ==================
+# ================== CALLBACK ==================
 @bot.callback_query_handler(func=lambda call: True)
-def handle_callbacks(call):
-    user_id = call.from_user.id
-    data = call.data
-    logger.info(f"Callback: User={user_id}, Data='{data}'")
-
-    if bot_locked and user_id not in admin_ids and data not in [
-        'back_to_main', 'speed', 'stats', 'mpx_ai', 'uptime',
-        'change_lang', 'setlang_tr', 'setlang_en', 'setlang_ru', 'setlang_ar', 'setlang_hi'
-    ] and not data.startswith('approve_') and not data.startswith('reject_'):
-        bot.answer_callback_query(call.id, t(user_id, 'bot_locked'), show_alert=True)
-        return
+def on_callback(call):
+    uid = call.from_user.id
+    d = call.data
+    last_active[uid] = datetime.now()
+    logger.info(f"CB: {uid} -> {d}")
+    if bot_locked and uid not in admin_ids and not (d.startswith('approve_') or d.startswith('reject_') or d == 'im_here'):
+        bot.answer_callback_query(call.id, t(uid, 'bot_locked'), show_alert=True); return
     try:
-        if data == 'upload': upload_callback(call)
-        elif data == 'check_files': check_files_callback(call)
-        elif data.startswith('file_'): file_control_callback(call)
-        elif data.startswith('start_'): start_bot_callback(call)
-        elif data.startswith('stop_'): stop_bot_callback(call)
-        elif data.startswith('restart_'): restart_bot_callback(call)
-        elif data.startswith('delete_'): delete_bot_callback(call)
-        elif data.startswith('logs_'): logs_bot_callback(call)
-        elif data == 'speed': speed_callback(call)
-        elif data == 'back_to_main': back_to_main_callback(call)
-        elif data.startswith('approve_'): handle_approve(call)
-        elif data.startswith('reject_'): handle_reject(call)
-        elif data == 'pending_list': admin_required_callback(call, lambda c: _logic_pending_list(c.message))
-        elif data.startswith('confirm_broadcast_'): handle_confirm_broadcast(call)
-        elif data == 'cancel_broadcast': handle_cancel_broadcast(call)
-        elif data == 'subscription': admin_required_callback(call, subscription_management_callback)
-        elif data == 'stats': stats_callback(call)
-        elif data == 'lock_bot': admin_required_callback(call, lock_bot_callback)
-        elif data == 'unlock_bot': admin_required_callback(call, unlock_bot_callback)
-        elif data == 'run_all_scripts': admin_required_callback(call, run_all_scripts_callback)
-        elif data == 'broadcast': admin_required_callback(call, broadcast_init_callback)
-        elif data == 'admin_panel': admin_required_callback(call, admin_panel_callback)
-        elif data == 'add_admin': owner_required_callback(call, add_admin_init_callback)
-        elif data == 'remove_admin': owner_required_callback(call, remove_admin_init_callback)
-        elif data == 'list_admins': admin_required_callback(call, list_admins_callback)
-        elif data == 'add_subscription': admin_required_callback(call, add_subscription_init_callback)
-        elif data == 'remove_subscription': admin_required_callback(call, remove_subscription_init_callback)
-        elif data == 'check_subscription': admin_required_callback(call, check_subscription_init_callback)
-        elif data == 'change_lang': change_lang_callback(call)
-        elif data.startswith('setlang_'): set_lang_callback(call)
-        elif data == 'mpx_ai':
+        if d == 'im_here':
+            bot.answer_callback_query(call.id, "💙 Harika! Sizi görmek güzel!")
+            try:
+                bot.send_message(call.message.chat.id,
+                    "😊 Çok sevindim! Sizi tekrar gördüğüme memnun oldum.\n"
+                    "İhtiyacınız olan her şey için buradayım! 💙")
+            except: pass
+            return
+        if d == 'upload': cb_upload(call)
+        elif d == 'check_files': cb_files(call)
+        elif d.startswith('file_'): cb_file_ctl(call)
+        elif d.startswith('start_'): cb_start(call)
+        elif d.startswith('stop_'): cb_stop(call)
+        elif d.startswith('restart_'): cb_restart(call)
+        elif d.startswith('delete_'): cb_delete(call)
+        elif d.startswith('logs_'): cb_logs(call)
+        elif d == 'speed':
             bot.answer_callback_query(call.id)
+            s = get_system_stats()
             bot.send_message(call.message.chat.id,
-                             "🤖 Sorunu /mpx komutuyla sor.\nÖrnek: `/mpx AI nedir?`", parse_mode='Markdown')
-        elif data == 'uptime':
+                f"⚡ **HIZ TESTİ**\n\n"
+                f"💻 CPU: `{s.get('cpu',0):.1f}%`\n"
+                f"🧠 RAM: `{s.get('ram_percent',0):.1f}%`\n"
+                f"🟢 Durum: `Aktif`\n"
+                f"⏱ Uptime: `{get_uptime()}`", parse_mode='Markdown')
+        elif d == 'back_to_main': cb_back_main(call)
+        elif d.startswith('approve_'): handle_approve(call)
+        elif d.startswith('reject_'): handle_reject(call)
+        elif d == 'pending_list':
+            if uid in admin_ids: cb_pending(call)
+            else: bot.answer_callback_query(call.id, "Admin gerekli.", show_alert=True)
+        elif d.startswith('confirm_broadcast_'): cb_confirm_broadcast(call)
+        elif d == 'cancel_broadcast': cb_cancel_broadcast(call)
+        elif d == 'subscription':
+            if uid in admin_ids: cb_subs(call)
+        elif d == 'stats': _logic_statistics(call.message)
+        elif d == 'lock_bot':
+            if uid in admin_ids: cb_lock(call)
+        elif d == 'unlock_bot':
+            if uid in admin_ids: cb_unlock(call)
+        elif d == 'run_all_scripts':
+            if uid in admin_ids: cb_run_all(call)
+        elif d == 'broadcast':
+            if uid in admin_ids: cb_broadcast(call)
+        elif d == 'admin_panel':
+            if uid in admin_ids: cb_admin_panel(call)
+        elif d == 'add_admin':
+            if uid == OWNER_ID: cb_add_admin(call)
+        elif d == 'remove_admin':
+            if uid == OWNER_ID: cb_remove_admin(call)
+        elif d == 'list_admins':
+            if uid in admin_ids: cb_list_admins(call)
+        elif d == 'add_subscription':
+            if uid in admin_ids: cb_add_sub(call)
+        elif d == 'remove_subscription':
+            if uid in admin_ids: cb_remove_sub(call)
+        elif d == 'check_subscription':
+            if uid in admin_ids: cb_check_sub(call)
+        elif d == 'mpx_ai':
             bot.answer_callback_query(call.id)
-            bot.send_message(call.message.chat.id, f"⏱ Çalışma: `{get_uptime()}`", parse_mode='Markdown')
+            bot.send_message(call.message.chat.id, "🤖 Sorunuzu `/mpx <soru>` komutuyla sorun.", parse_mode='Markdown')
+        elif d == 'uptime':
+            bot.answer_callback_query(call.id)
+            bot.send_message(call.message.chat.id, f"⏱ `{get_uptime()}`", parse_mode='Markdown')
+        elif d == 'sysinfo':
+            bot.answer_callback_query(call.id)
+            bot.send_message(call.message.chat.id, format_stats(), parse_mode='Markdown')
+        elif d == 'cleanup_now':
+            if uid in admin_ids:
+                bot.answer_callback_query(call.id, "Temizlik başladı...")
+                freed = cleanup_garbage()
+                bot.send_message(call.message.chat.id,
+                    f"🧹 Temizlik tamam!\n💾 Serbest: `{freed/1024/1024:.2f} MB`", parse_mode='Markdown')
+        elif d == 'reduce_now':
+            if uid in admin_ids:
+                bot.answer_callback_query(call.id, "Kaynaklar düşürülüyor...")
+                force_reduce_resources()
+                s = get_system_stats()
+                bot.send_message(call.message.chat.id,
+                    f"🔥 Düşürüldü!\n💻 CPU: `{s.get('cpu',0):.1f}%`\n🧠 RAM: `{s.get('ram_percent',0):.1f}%`",
+                    parse_mode='Markdown')
+        elif d == 'bulk_download':
+            if uid in admin_ids: cb_bulk_download(call, None)
+        elif d.startswith('toggle_autorestart_'): cb_toggle_auto(call)
+        elif d.startswith('stats_file_'): cb_file_stats(call)
+        elif d.startswith('dl_log_'): cb_dl_log(call)
+        elif d.startswith('toggle_lock_'): cb_toggle_lock(call)
+        elif d.startswith('note_'): cb_note(call)
         else:
-            bot.answer_callback_query(call.id, "Bilinmeyen işlem.")
+            bot.answer_callback_query(call.id)
     except Exception as e:
-        logger.error(f"Callback hatası '{data}': {e}", exc_info=True)
-        try: bot.answer_callback_query(call.id, "İşlem hatası.", show_alert=True)
-        except Exception: pass
+        logger.error(f"CB hata '{d}': {e}", exc_info=True)
+        try: bot.answer_callback_query(call.id, "Hata.", show_alert=True)
+        except: pass
 
-def change_lang_callback(call):
+def cb_upload(call):
+    uid = call.from_user.id
+    fl = get_user_file_limit(uid); cf = get_user_file_count(uid)
+    if cf >= fl:
+        bot.answer_callback_query(call.id, f"Limit dolu ({cf}/{fl})", show_alert=True); return
     bot.answer_callback_query(call.id)
-    try:
-        bot.edit_message_text("🌐 Dil seç / Choose language:", call.message.chat.id,
-                              call.message.message_id, reply_markup=create_lang_menu())
-    except Exception as e: logger.error(f"Dil menüsü hatası: {e}")
+    bot.send_message(call.message.chat.id,
+        "📤 **Dosya Yükleme**\n\n"
+        "Bana bir `.py` veya `.zip` dosyası gönderin.\n\n"
+        "⚠️ Dosyanız admin onayından geçtikten sonra çalışacaktır.\n"
+        "🐍 Her dosya kendi sanal ortamında (venv) çalışır.", parse_mode='Markdown')
 
-def set_lang_callback(call):
-    lang_code = call.data.replace('setlang_', '')
-    if lang_code not in TRANSLATIONS: lang_code = 'tr'
-    user_id = call.from_user.id
-    save_user_lang(user_id, lang_code)
-    bot.answer_callback_query(call.id, f"✅ Dil: {lang_code.upper()}")
-    chat_id = call.message.chat.id
-    file_limit = get_user_file_limit(user_id)
-    current_files = get_user_file_count(user_id)
-    limit_str = str(file_limit) if file_limit != float('inf') else "Sınırsız"
-    welcome_msg_text = (
-        f"{t(user_id, 'welcome', name=call.from_user.first_name)}\n\n"
-        f"{t(user_id, 'your_id')}: `{user_id}`\n"
-        f"{t(user_id, 'files_uploaded')}: {current_files} / {limit_str}\n\n"
-        f"📢 {FORCED_CHANNEL}\n💬 {SUPPORT_USERNAME}"
-    )
-    try:
-        bot.edit_message_text(welcome_msg_text, chat_id, call.message.message_id,
-                              reply_markup=create_main_menu_inline(user_id), parse_mode='Markdown')
-    except Exception as e:
-        logger.error(f"Dil menü güncelleme hatası: {e}")
-
-def admin_required_callback(call, func_to_run):
-    if call.from_user.id not in admin_ids:
-        bot.answer_callback_query(call.id, t(call.from_user.id, 'admin_required'), show_alert=True); return
-    func_to_run(call)
-
-def owner_required_callback(call, func_to_run):
-    if call.from_user.id != OWNER_ID:
-        bot.answer_callback_query(call.id, t(call.from_user.id, 'owner_required'), show_alert=True); return
-    func_to_run(call)
-
-def upload_callback(call):
-    user_id = call.from_user.id
-    file_limit = get_user_file_limit(user_id)
-    current_files = get_user_file_count(user_id)
-    if current_files >= file_limit:
-        limit_str = str(file_limit) if file_limit != float('inf') else "Sınırsız"
-        bot.answer_callback_query(call.id, t(user_id, 'file_limit_reached', current=current_files, limit=limit_str),
-                                  show_alert=True); return
-    bot.answer_callback_query(call.id)
-    bot.send_message(call.message.chat.id, t(user_id, 'send_file'))
-
-def check_files_callback(call):
-    user_id = call.from_user.id
-    chat_id = call.message.chat.id
-    user_files_list = user_files.get(user_id, [])
-    if not user_files_list:
-        bot.answer_callback_query(call.id, t(user_id, 'no_files'), show_alert=True)
-        return
+def cb_files(call):
+    uid = call.from_user.id
+    if not user_files.get(uid):
+        bot.answer_callback_query(call.id, "Dosyanız yok.", show_alert=True); return
     bot.answer_callback_query(call.id)
     markup = types.InlineKeyboardMarkup(row_width=1)
-    for file_name, file_type in sorted(user_files_list):
-        is_running = is_bot_running(user_id, file_name)
-        pending = any(info['user_id'] == user_id and info['file_name'] == file_name
-                      for info in pending_approvals.values())
-        if pending:
-            status_icon = "⏳ " + t(user_id, 'waiting_approval_short')
-        else:
-            status_icon = ("🟢 " + t(user_id, 'running')) if is_running else ("🔴 " + t(user_id, 'stopped'))
-        btn_text = f"{file_name} ({file_type}) - {status_icon}"
-        markup.add(types.InlineKeyboardButton(btn_text, callback_data=f'file_{user_id}_{file_name}'))
-    markup.add(types.InlineKeyboardButton("🔙 " + t(user_id, 'back_to_main'), callback_data='back_to_main'))
+    for fn, ft in sorted(user_files[uid]):
+        is_run = is_bot_running(uid, fn)
+        pending = any(i['user_id'] == uid and i['file_name'] == fn for i in pending_approvals.values())
+        if pending: icon = "⏳"
+        else: icon = "🟢" if is_run else "🔴"
+        note_icon = " 📝" if file_notes.get(f"{uid}_{fn}") else ""
+        lock_icon = " 🔒" if file_locks.get(f"{uid}_{fn}", False) else ""
+        markup.add(types.InlineKeyboardButton(f"{icon} {fn} ({ft}){note_icon}{lock_icon}",
+                    callback_data=f'file_{uid}_{fn}'))
+    markup.add(types.InlineKeyboardButton("🔙 Ana Menü", callback_data='back_to_main'))
     try:
-        bot.edit_message_text(t(user_id, 'your_files'), chat_id, call.message.message_id,
-                              reply_markup=markup, parse_mode='Markdown')
-    except telebot.apihelper.ApiTelegramException as e:
-        if "message is not modified" not in str(e): logger.error(f"Dosya listesi hatası: {e}")
-    except Exception as e:
-        logger.error(f"Dosya listesi hatası: {e}", exc_info=True)
+        bot.edit_message_text("📂 **Dosyalarınız:**\n\nYönetmek için tıklayın 👇", call.message.chat.id,
+            call.message.message_id, reply_markup=markup, parse_mode='Markdown')
+    except: pass
 
-def file_control_callback(call):
+def cb_file_ctl(call):
     try:
-        _, script_owner_id_str, file_name = call.data.split('_', 2)
-        script_owner_id = int(script_owner_id_str)
-        requesting_user_id = call.from_user.id
-
-        if not (requesting_user_id == script_owner_id or requesting_user_id in admin_ids):
-            bot.answer_callback_query(call.id, t(requesting_user_id, 'permission_denied'), show_alert=True); return
-
-        user_files_list = user_files.get(script_owner_id, [])
-        if not any(f[0] == file_name for f in user_files_list):
-            bot.answer_callback_query(call.id, t(requesting_user_id, 'file_not_found'), show_alert=True); return
-
+        _, oid, fn = call.data.split('_', 2)
+        oid = int(oid); rid = call.from_user.id
+        if not (rid == oid or rid in admin_ids):
+            bot.answer_callback_query(call.id, "İzin yok.", show_alert=True); return
+        if not any(f[0] == fn for f in user_files.get(oid, [])):
+            bot.answer_callback_query(call.id, "Bulunamadı.", show_alert=True); return
         bot.answer_callback_query(call.id)
-        is_running = is_bot_running(script_owner_id, file_name)
-        pending = any(info['user_id'] == script_owner_id and info['file_name'] == file_name
-                      for info in pending_approvals.values())
+        is_run = is_bot_running(oid, fn)
+        pending = any(i['user_id'] == oid and i['file_name'] == fn for i in pending_approvals.values())
         if pending:
-            status_text = "⏳ " + t(requesting_user_id, 'waiting_approval_short')
+            status = "⏳ Onay Bekliyor"
+            markup = types.InlineKeyboardMarkup()
+            markup.add(types.InlineKeyboardButton("🗑️ Sil", callback_data=f'delete_{oid}_{fn}'))
+            markup.add(types.InlineKeyboardButton("🔙 Geri", callback_data='check_files'))
         else:
-            status_text = t(requesting_user_id, 'running') if is_running else t(requesting_user_id, 'stopped')
-        file_type = next((f[1] for f in user_files_list if f[0] == file_name), '?')
-
-        if pending:
-            markup = types.InlineKeyboardMarkup(row_width=2)
-            markup.row(
-                types.InlineKeyboardButton("🗑️ " + t(requesting_user_id, 'delete'),
-                                           callback_data=f'delete_{script_owner_id}_{file_name}')
-            )
-            markup.add(types.InlineKeyboardButton("🔙 " + t(requesting_user_id, 'back_to_files'),
-                                                  callback_data='check_files'))
-        else:
-            markup = create_control_buttons(script_owner_id, file_name, is_running, requesting_user_id)
-
+            status = "🟢 Çalışıyor" if is_run else "🔴 Durdu"
+            markup = create_control_buttons(oid, fn, is_run, rid)
+        note = file_notes.get(f"{oid}_{fn}", "")
+        note_str = f"\n📝 Not: {note}" if note else ""
         try:
             bot.edit_message_text(
-                f"🎛 Kontrol: `{file_name}` ({file_type}) - Kullanıcı `{script_owner_id}`\nDurum: {status_text}",
+                f"🎛 **Kontrol**\n\n📄 `{fn}`\n👤 `{oid}`\n📊 {status}{note_str}",
                 call.message.chat.id, call.message.message_id,
-                reply_markup=markup, parse_mode='Markdown'
-            )
-        except telebot.apihelper.ApiTelegramException as e:
-            if "message is not modified" not in str(e): raise
+                reply_markup=markup, parse_mode='Markdown')
+        except: pass
     except Exception as e:
-        logger.error(f"file_control hatası: {e}", exc_info=True)
-        bot.answer_callback_query(call.id, "Hata.", show_alert=True)
+        logger.error(f"file_ctl: {e}")
 
-def start_bot_callback(call):
+def cb_start(call):
     try:
-        _, script_owner_id_str, file_name = call.data.split('_', 2)
-        script_owner_id = int(script_owner_id_str)
-        requesting_user_id = call.from_user.id
-        chat_id_for_reply = call.message.chat.id
-
-        if not (requesting_user_id == script_owner_id or requesting_user_id in admin_ids):
-            bot.answer_callback_query(call.id, t(requesting_user_id, 'permission_denied'), show_alert=True); return
-
-        if any(info['user_id'] == script_owner_id and info['file_name'] == file_name
-               for info in pending_approvals.values()):
-            bot.answer_callback_query(call.id, "⏳ Bu dosya admin onayı bekliyor.", show_alert=True); return
-
-        user_files_list = user_files.get(script_owner_id, [])
-        file_info = next((f for f in user_files_list if f[0] == file_name), None)
-        if not file_info:
-            bot.answer_callback_query(call.id, t(requesting_user_id, 'file_not_found'), show_alert=True); return
-
-        file_type = file_info[1]
-        user_folder = get_user_folder(script_owner_id)
-        file_path = os.path.join(user_folder, file_name)
-
-        if not os.path.exists(file_path):
-            bot.answer_callback_query(call.id, f"Hata: `{file_name}` kayıp!", show_alert=True)
-            remove_user_file_db(script_owner_id, file_name); return
-
-        if is_bot_running(script_owner_id, file_name):
-            bot.answer_callback_query(call.id, f"'{file_name}' zaten çalışıyor.", show_alert=True); return
-
-        bot.answer_callback_query(call.id, f"'{file_name}' başlatılıyor...")
-
-        threading.Thread(target=run_script,
-                         args=(file_path, script_owner_id, user_folder, file_name, call.message),
-                         daemon=True).start()
-
+        _, oid, fn = call.data.split('_', 2)
+        oid = int(oid); rid = call.from_user.id
+        if not (rid == oid or rid in admin_ids):
+            bot.answer_callback_query(call.id, "İzin yok.", show_alert=True); return
+        if any(i['user_id'] == oid and i['file_name'] == fn for i in pending_approvals.values()):
+            bot.answer_callback_query(call.id, "⏳ Admin onayı bekliyor.", show_alert=True); return
+        if not any(f[0] == fn for f in user_files.get(oid, [])):
+            bot.answer_callback_query(call.id, "Bulunamadı.", show_alert=True); return
+        uf = get_user_folder(oid)
+        fp = os.path.join(uf, fn)
+        if not os.path.exists(fp):
+            bot.answer_callback_query(call.id, "Dosya kayıp.", show_alert=True); return
+        if is_bot_running(oid, fn):
+            bot.answer_callback_query(call.id, "Zaten çalışıyor.", show_alert=True); return
+        bot.answer_callback_query(call.id, "Başlatılıyor...")
+        threading.Thread(target=run_script, args=(fp, oid, uf, fn, call.message), daemon=True).start()
         time.sleep(1.5)
-        is_now_running = is_bot_running(script_owner_id, file_name)
-        status_text = t(requesting_user_id, 'running') if is_now_running else t(requesting_user_id, 'starting')
+        is_run = is_bot_running(oid, fn)
         try:
-            bot.edit_message_text(
-                f"🎛 Kontrol: `{file_name}` ({file_type}) - Kullanıcı `{script_owner_id}`\nDurum: {status_text}",
-                chat_id_for_reply, call.message.message_id,
-                reply_markup=create_control_buttons(script_owner_id, file_name, is_now_running, requesting_user_id),
-                parse_mode='Markdown'
-            )
-        except Exception: pass
+            bot.edit_message_reply_markup(call.message.chat.id, call.message.message_id,
+                reply_markup=create_control_buttons(oid, fn, is_run, rid))
+        except: pass
     except Exception as e:
-        logger.error(f"start_bot hatası: {e}", exc_info=True)
-        bot.answer_callback_query(call.id, "Hata.", show_alert=True)
+        logger.error(f"start: {e}")
 
-def stop_bot_callback(call):
+def cb_stop(call):
     try:
-        _, script_owner_id_str, file_name = call.data.split('_', 2)
-        script_owner_id = int(script_owner_id_str)
-        requesting_user_id = call.from_user.id
-        chat_id_for_reply = call.message.chat.id
-
-        if not (requesting_user_id == script_owner_id or requesting_user_id in admin_ids):
-            bot.answer_callback_query(call.id, t(requesting_user_id, 'permission_denied'), show_alert=True); return
-
-        user_files_list = user_files.get(script_owner_id, [])
-        file_info = next((f for f in user_files_list if f[0] == file_name), None)
-        if not file_info:
-            bot.answer_callback_query(call.id, t(requesting_user_id, 'file_not_found'), show_alert=True); return
-
-        file_type = file_info[1]
-        script_key = f"{script_owner_id}_{file_name}"
-
-        if not is_bot_running(script_owner_id, file_name):
-            bot.answer_callback_query(call.id, f"'{file_name}' zaten durdu.", show_alert=True); return
-
-        bot.answer_callback_query(call.id, f"'{file_name}' durduruluyor...")
-        process_info = bot_scripts.get(script_key)
-        if process_info:
-            kill_process_tree(process_info)
-            if script_key in bot_scripts: del bot_scripts[script_key]
-
+        _, oid, fn = call.data.split('_', 2)
+        oid = int(oid); rid = call.from_user.id
+        if not (rid == oid or rid in admin_ids):
+            bot.answer_callback_query(call.id, "İzin yok.", show_alert=True); return
+        if file_locks.get(f"{oid}_{fn}", False) and rid not in admin_ids:
+            bot.answer_callback_query(call.id, "🔒 Dosya kilitli. Önce kilidi açın.", show_alert=True); return
+        sk = f"{oid}_{fn}"
+        if not is_bot_running(oid, fn):
+            bot.answer_callback_query(call.id, "Zaten durdu.", show_alert=True); return
+        bot.answer_callback_query(call.id, "Durduruluyor...")
+        if sk in bot_scripts:
+            kill_process_tree(bot_scripts[sk]); del bot_scripts[sk]
         try:
-            bot.edit_message_text(
-                f"🎛 Kontrol: `{file_name}` ({file_type}) - Kullanıcı `{script_owner_id}`\nDurum: 🔴 {t(requesting_user_id, 'stopped')}",
-                chat_id_for_reply, call.message.message_id,
-                reply_markup=create_control_buttons(script_owner_id, file_name, False, requesting_user_id),
-                parse_mode='Markdown'
-            )
-        except Exception: pass
-    except Exception as e:
-        logger.error(f"stop_bot hatası: {e}", exc_info=True)
-        bot.answer_callback_query(call.id, "Hata.", show_alert=True)
+            bot.edit_message_reply_markup(call.message.chat.id, call.message.message_id,
+                reply_markup=create_control_buttons(oid, fn, False, rid))
+        except: pass
+    except Exception as e: logger.error(f"stop: {e}")
 
-def restart_bot_callback(call):
+def cb_restart(call):
     try:
-        _, script_owner_id_str, file_name = call.data.split('_', 2)
-        script_owner_id = int(script_owner_id_str)
-        requesting_user_id = call.from_user.id
-        chat_id_for_reply = call.message.chat.id
-
-        if not (requesting_user_id == script_owner_id or requesting_user_id in admin_ids):
-            bot.answer_callback_query(call.id, t(requesting_user_id, 'permission_denied'), show_alert=True); return
-
-        if any(info['user_id'] == script_owner_id and info['file_name'] == file_name
-               for info in pending_approvals.values()):
-            bot.answer_callback_query(call.id, "⏳ Bu dosya admin onayı bekliyor.", show_alert=True); return
-
-        user_files_list = user_files.get(script_owner_id, [])
-        file_info = next((f for f in user_files_list if f[0] == file_name), None)
-        if not file_info:
-            bot.answer_callback_query(call.id, t(requesting_user_id, 'file_not_found'), show_alert=True); return
-
-        file_type = file_info[1]; user_folder = get_user_folder(script_owner_id)
-        file_path = os.path.join(user_folder, file_name); script_key = f"{script_owner_id}_{file_name}"
-
-        if not os.path.exists(file_path):
-            bot.answer_callback_query(call.id, f"Hata: `{file_name}` kayıp!", show_alert=True)
-            remove_user_file_db(script_owner_id, file_name); return
-
-        bot.answer_callback_query(call.id, f"'{file_name}' yeniden başlatılıyor...")
-        if is_bot_running(script_owner_id, file_name):
-            process_info = bot_scripts.get(script_key)
-            if process_info: kill_process_tree(process_info)
-            if script_key in bot_scripts: del bot_scripts[script_key]
-            time.sleep(1.5)
-
-        threading.Thread(target=run_script,
-                         args=(file_path, script_owner_id, user_folder, file_name, call.message),
-                         daemon=True).start()
-
+        _, oid, fn = call.data.split('_', 2)
+        oid = int(oid); rid = call.from_user.id
+        if not (rid == oid or rid in admin_ids):
+            bot.answer_callback_query(call.id, "İzin yok.", show_alert=True); return
+        if any(i['user_id'] == oid and i['file_name'] == fn for i in pending_approvals.values()):
+            bot.answer_callback_query(call.id, "Onay bekliyor.", show_alert=True); return
+        uf = get_user_folder(oid); fp = os.path.join(uf, fn)
+        if not os.path.exists(fp):
+            bot.answer_callback_query(call.id, "Kayıp.", show_alert=True); return
+        bot.answer_callback_query(call.id, "Yeniden başlıyor...")
+        sk = f"{oid}_{fn}"
+        if sk in bot_scripts:
+            kill_process_tree(bot_scripts[sk]); del bot_scripts[sk]
+            time.sleep(1)
+        threading.Thread(target=run_script, args=(fp, oid, uf, fn, call.message), daemon=True).start()
         time.sleep(1.5)
-        is_now_running = is_bot_running(script_owner_id, file_name)
-        status_text = t(requesting_user_id, 'running') if is_now_running else t(requesting_user_id, 'starting')
+        is_run = is_bot_running(oid, fn)
         try:
-            bot.edit_message_text(
-                f"🎛 Kontrol: `{file_name}` ({file_type}) - Kullanıcı `{script_owner_id}`\nDurum: {status_text}",
-                chat_id_for_reply, call.message.message_id,
-                reply_markup=create_control_buttons(script_owner_id, file_name, is_now_running, requesting_user_id),
-                parse_mode='Markdown'
-            )
-        except Exception: pass
-    except Exception as e:
-        logger.error(f"restart_bot hatası: {e}", exc_info=True)
-        bot.answer_callback_query(call.id, "Hata.", show_alert=True)
+            bot.edit_message_reply_markup(call.message.chat.id, call.message.message_id,
+                reply_markup=create_control_buttons(oid, fn, is_run, rid))
+        except: pass
+    except Exception as e: logger.error(f"restart: {e}")
 
-def delete_bot_callback(call):
+def cb_delete(call):
     try:
-        _, script_owner_id_str, file_name = call.data.split('_', 2)
-        script_owner_id = int(script_owner_id_str)
-        requesting_user_id = call.from_user.id
-
-        if not (requesting_user_id == script_owner_id or requesting_user_id in admin_ids):
-            bot.answer_callback_query(call.id, t(requesting_user_id, 'permission_denied'), show_alert=True); return
-
-        user_files_list = user_files.get(script_owner_id, [])
-        if not any(f[0] == file_name for f in user_files_list):
-            bot.answer_callback_query(call.id, t(requesting_user_id, 'file_not_found'), show_alert=True); return
-
-        bot.answer_callback_query(call.id, f"'{file_name}' siliniyor...")
-        script_key = f"{script_owner_id}_{file_name}"
-        if is_bot_running(script_owner_id, file_name):
-            process_info = bot_scripts.get(script_key)
-            if process_info: kill_process_tree(process_info)
-            if script_key in bot_scripts: del bot_scripts[script_key]
+        _, oid, fn = call.data.split('_', 2)
+        oid = int(oid); rid = call.from_user.id
+        if not (rid == oid or rid in admin_ids):
+            bot.answer_callback_query(call.id, "İzin yok.", show_alert=True); return
+        if file_locks.get(f"{oid}_{fn}", False) and rid not in admin_ids:
+            bot.answer_callback_query(call.id, "🔒 Dosya kilitli.", show_alert=True); return
+        bot.answer_callback_query(call.id, "Siliniyor...")
+        sk = f"{oid}_{fn}"
+        if sk in bot_scripts:
+            kill_process_tree(bot_scripts[sk]); del bot_scripts[sk]
             time.sleep(0.5)
-
-        user_folder = get_user_folder(script_owner_id)
-        file_path = os.path.join(user_folder, file_name)
-        log_path = os.path.join(user_folder, f"{os.path.splitext(file_name)[0]}.log")
-        if os.path.exists(file_path):
-            try: os.remove(file_path)
-            except OSError: pass
-        if os.path.exists(log_path):
-            try: os.remove(log_path)
-            except OSError: pass
-
-        remove_user_file_db(script_owner_id, file_name)
+        uf = get_user_folder(oid)
+        fp = os.path.join(uf, fn)
+        lp = os.path.join(uf, f"{os.path.splitext(fn)[0]}.log")
+        for p in [fp, lp]:
+            if os.path.exists(p):
+                try: os.remove(p)
+                except: pass
+        remove_user_file_db(oid, fn)
+        file_locks.pop(sk, None)
         try:
-            bot.edit_message_text(
-                f"✅ `{file_name}` (Kullanıcı `{script_owner_id}`) silindi!",
-                call.message.chat.id, call.message.message_id, reply_markup=None, parse_mode='Markdown'
-            )
-        except Exception:
-            bot.send_message(call.message.chat.id, f"`{file_name}` silindi.", parse_mode='Markdown')
-    except Exception as e:
-        logger.error(f"delete_bot hatası: {e}", exc_info=True)
-        bot.answer_callback_query(call.id, "Hata.", show_alert=True)
+            bot.edit_message_text(f"✅ `{fn}` silindi.", call.message.chat.id,
+                call.message.message_id, reply_markup=None, parse_mode='Markdown')
+        except: pass
+    except Exception as e: logger.error(f"delete: {e}")
 
-def logs_bot_callback(call):
+def cb_logs(call):
     try:
-        _, script_owner_id_str, file_name = call.data.split('_', 2)
-        script_owner_id = int(script_owner_id_str)
-        requesting_user_id = call.from_user.id
-        chat_id_for_reply = call.message.chat.id
-
-        if not (requesting_user_id == script_owner_id or requesting_user_id in admin_ids):
-            bot.answer_callback_query(call.id, t(requesting_user_id, 'permission_denied'), show_alert=True); return
-
-        user_folder = get_user_folder(script_owner_id)
-        log_path = os.path.join(user_folder, f"{os.path.splitext(file_name)[0]}.log")
-        if not os.path.exists(log_path):
-            bot.answer_callback_query(call.id, f"'{file_name}' için log yok.", show_alert=True); return
-
+        _, oid, fn = call.data.split('_', 2)
+        oid = int(oid); rid = call.from_user.id
+        if not (rid == oid or rid in admin_ids):
+            bot.answer_callback_query(call.id, "İzin yok.", show_alert=True); return
+        uf = get_user_folder(oid)
+        lp = os.path.join(uf, f"{os.path.splitext(fn)[0]}.log")
+        if not os.path.exists(lp):
+            bot.answer_callback_query(call.id, "Log yok.", show_alert=True); return
         bot.answer_callback_query(call.id)
-        try:
-            log_content = ""; file_size = os.path.getsize(log_path)
-            max_log_kb = 100; max_tg_msg = 4096
-            if file_size == 0:
-                log_content = "(Log boş)"
-            elif file_size > max_log_kb * 1024:
-                with open(log_path, 'rb') as f:
-                    f.seek(-max_log_kb * 1024, os.SEEK_END)
-                    log_bytes = f.read()
-                log_content = f"(Son {max_log_kb} KB)\n...\n" + log_bytes.decode('utf-8', errors='ignore')
-            else:
-                with open(log_path, 'r', encoding='utf-8', errors='ignore') as f:
-                    log_content = f.read()
+        size = os.path.getsize(lp)
+        if size > 100*1024:
+            with open(lp, 'rb') as f:
+                f.seek(-100*1024, os.SEEK_END)
+                content = f.read().decode('utf-8', errors='ignore')
+            content = f"(son 100KB)\n...\n" + content
+        else:
+            with open(lp, 'r', encoding='utf-8', errors='ignore') as f: content = f.read()
+        if not content.strip(): content = "(boş)"
+        if len(content) > 4000: content = content[-4000:]
+        bot.send_message(call.message.chat.id, f"📜 `{fn}`\n```\n{content}\n```", parse_mode='Markdown')
+    except Exception as e: logger.error(f"logs: {e}")
 
-            if len(log_content) > max_tg_msg:
-                log_content = log_content[-max_tg_msg:]
-            if not log_content.strip():
-                log_content = "(İçerik yok)"
-
-            bot.send_message(chat_id_for_reply, f"📜 Log: `{file_name}`\n```\n{log_content}\n```", parse_mode='Markdown')
-        except Exception as e:
-            logger.error(f"Log okuma hatası: {e}", exc_info=True)
-            bot.send_message(chat_id_for_reply, f"Log okuma hatası `{file_name}`.")
-    except Exception as e:
-        logger.error(f"logs_bot hatası: {e}", exc_info=True)
-        bot.answer_callback_query(call.id, "Hata.", show_alert=True)
-
-def speed_callback(call):
-    user_id = call.from_user.id
-    chat_id = call.message.chat.id
-    start_cb_ping_time = time.time()
-    try:
-        bot.send_chat_action(chat_id, 'typing')
-        response_time = round((time.time() - start_cb_ping_time) * 1000, 2)
-        status = "Kilitli değil" if not bot_locked else "Kilitli"
-        if user_id == OWNER_ID: user_level = "Sahip"
-        elif user_id in admin_ids: user_level = "Admin"
-        elif user_id in user_subscriptions and user_subscriptions[user_id].get('expiry', datetime.min) > datetime.now():
-            user_level = "Premium"
-        else: user_level = "Ücretsiz"
-        speed_msg = (f"⚡ Bot Hızı ve Durumu:\n\n"
-                     f"📡 API Yanıt: {response_time} ms\n"
-                     f"🔐 Bot Durumu: {status}\n"
-                     f"👤 Seviyen: {user_level}")
-        bot.answer_callback_query(call.id)
-        bot.edit_message_text(speed_msg, chat_id, call.message.message_id,
-                              reply_markup=create_main_menu_inline(user_id))
-    except Exception as e:
-        logger.error(f"Hız testi hatası: {e}", exc_info=True)
-        bot.answer_callback_query(call.id, "Hız testi hatası.", show_alert=True)
-
-def back_to_main_callback(call):
-    user_id = call.from_user.id
-    chat_id = call.message.chat.id
-    file_limit = get_user_file_limit(user_id)
-    current_files = get_user_file_count(user_id)
-    limit_str = str(file_limit) if file_limit != float('inf') else "Sınırsız"
-    expiry_info = ""
-    if user_id == OWNER_ID: user_status = "Sahip"
-    elif user_id in admin_ids: user_status = "Admin"
-    elif user_id in user_subscriptions:
-        expiry_date = user_subscriptions[user_id].get('expiry')
-        if expiry_date and expiry_date > datetime.now():
-            user_status = "Premium"; days_left = (expiry_date - datetime.now()).days
-            expiry_info = f"\nAbonelik: {days_left} gün"
-        else: user_status = "Ücretsiz (Süresi dolmuş)"
-    else: user_status = "Ücretsiz"
-
-    main_menu_text = (
-        f"{t(user_id, 'welcome', name=call.from_user.first_name)}\n\n"
-        f"{t(user_id, 'your_id')}: `{user_id}`\n"
-        f"{t(user_id, 'your_status')}: {user_status}{expiry_info}\n"
-        f"{t(user_id, 'files_uploaded')}: {current_files} / {limit_str}\n\n"
-        f"📢 {FORCED_CHANNEL}\n💬 {SUPPORT_USERNAME}"
+def cb_back_main(call):
+    uid = call.from_user.id
+    fl = get_user_file_limit(uid); cf = get_user_file_count(uid)
+    ls = str(fl) if fl != float('inf') else "Sınırsız"
+    txt = (
+        f"🏠 **Ana Menü**\n\n"
+        f"👤 ID: `{uid}`\n"
+        f"📁 Dosyalar: `{cf}/{ls}`\n\n"
+        f"📢 {FORCED_CHANNEL}\n"
+        f"💬 {SUPPORT_USERNAME}"
     )
     try:
         bot.answer_callback_query(call.id)
-        bot.edit_message_text(main_menu_text, chat_id, call.message.message_id,
-                              reply_markup=create_main_menu_inline(user_id), parse_mode='Markdown')
-    except telebot.apihelper.ApiTelegramException as e:
-        if "message is not modified" not in str(e): logger.error(f"back_to_main hatası: {e}")
-    except Exception as e:
-        logger.error(f"back_to_main hatası: {e}", exc_info=True)
+        bot.edit_message_text(txt, call.message.chat.id, call.message.message_id,
+            reply_markup=create_main_menu_inline(uid), parse_mode='Markdown')
+    except: pass
 
-def subscription_management_callback(call):
+def cb_pending(call):
+    if not pending_approvals:
+        bot.answer_callback_query(call.id, "Bekleyen yok.", show_alert=True); return
     bot.answer_callback_query(call.id)
-    try:
-        bot.edit_message_text("💳 Abonelik Yönetimi\nİşlem seç:", call.message.chat.id,
-                              call.message.message_id, reply_markup=create_subscription_menu(call.from_user.id))
-    except Exception as e: logger.error(f"Abonelik menü hatası: {e}")
+    for aid, info in list(pending_approvals.items()):
+        m = types.InlineKeyboardMarkup()
+        m.row(
+            types.InlineKeyboardButton(f"✅ #{aid}", callback_data=f'approve_{aid}'),
+            types.InlineKeyboardButton(f"❌ #{aid}", callback_data=f'reject_{aid}')
+        )
+        try:
+            bot.send_message(call.message.chat.id,
+                f"#{aid} - `{info['file_name']}` (User: `{info['user_id']}`)",
+                reply_markup=m, parse_mode='Markdown')
+        except: pass
 
-def stats_callback(call):
-    bot.answer_callback_query(call.id)
-    _logic_statistics(call.message)
-
-def lock_bot_callback(call):
+def cb_lock(call):
     global bot_locked; bot_locked = True
-    logger.warning(f"Bot kilitlendi - Admin {call.from_user.id}")
-    bot.answer_callback_query(call.id, t(call.from_user.id, 'bot_locked_msg'))
+    bot.answer_callback_query(call.id, "🔒 Kilitlendi.")
     try:
         bot.edit_message_reply_markup(call.message.chat.id, call.message.message_id,
-                                      reply_markup=create_main_menu_inline(call.from_user.id))
-    except Exception: pass
+            reply_markup=create_main_menu_inline(call.from_user.id))
+    except: pass
 
-def unlock_bot_callback(call):
+def cb_unlock(call):
     global bot_locked; bot_locked = False
-    logger.warning(f"Bot kilidi açıldı - Admin {call.from_user.id}")
-    bot.answer_callback_query(call.id, t(call.from_user.id, 'bot_unlocked_msg'))
+    bot.answer_callback_query(call.id, "🔓 Açıldı.")
     try:
         bot.edit_message_reply_markup(call.message.chat.id, call.message.message_id,
-                                      reply_markup=create_main_menu_inline(call.from_user.id))
-    except Exception: pass
+            reply_markup=create_main_menu_inline(call.from_user.id))
+    except: pass
 
-def run_all_scripts_callback(call):
-    _logic_run_all_scripts(call)
+def cb_run_all(call):
+    bot.answer_callback_query(call.id, "Başlatılıyor...")
+    count = 0
+    for uid, files in dict(user_files).items():
+        uf = get_user_folder(uid)
+        for fn, ft in files:
+            if ft != 'py': continue
+            if is_bot_running(uid, fn): continue
+            if any(i['user_id'] == uid and i['file_name'] == fn for i in pending_approvals.values()): continue
+            fp = os.path.join(uf, fn)
+            if os.path.exists(fp):
+                threading.Thread(target=run_script, args=(fp, uid, uf, fn, call.message), daemon=True).start()
+                count += 1
+                time.sleep(0.7)
+    bot.send_message(call.message.chat.id, f"✅ {count} bot başlatıldı.")
 
-def broadcast_init_callback(call):
+def cb_broadcast(call):
     bot.answer_callback_query(call.id)
-    msg = bot.send_message(call.message.chat.id, t(call.from_user.id, 'broadcast_prompt'))
-    bot.register_next_step_handler(msg, process_broadcast_message)
+    msg = bot.send_message(call.message.chat.id, "📢 Duyuru mesajını yaz.\n/cancel iptal.")
+    bot.register_next_step_handler(msg, process_broadcast)
 
-def process_broadcast_message(message):
-    user_id = message.from_user.id
-    if user_id not in admin_ids:
-        bot.reply_to(message, t(user_id, 'admin_required')); return
-    if message.text and message.text.lower() == '/cancel':
-        bot.reply_to(message, t(user_id, 'broadcast_cancelled')); return
-
-    broadcast_content = message.text
-    if not broadcast_content and not (message.photo or message.video):
-        bot.reply_to(message, "Boş mesaj gönderilemez. /cancel ile iptal et.")
-        return
-
-    target_count = len(active_users)
+def process_broadcast(m):
+    uid = m.from_user.id
+    if uid not in admin_ids: return
+    if m.text and m.text.lower() == '/cancel':
+        bot.reply_to(m, "İptal."); return
+    target = len(active_users)
     markup = types.InlineKeyboardMarkup()
     markup.row(
-        types.InlineKeyboardButton(t(user_id, 'broadcast_confirm'),
-                                   callback_data=f"confirm_broadcast_{message.message_id}"),
+        types.InlineKeyboardButton("✅ Onayla", callback_data=f"confirm_broadcast_{m.message_id}"),
         types.InlineKeyboardButton("❌ İptal", callback_data="cancel_broadcast")
     )
-
-    preview_text = broadcast_content[:1000].strip() if broadcast_content else "(Medya mesajı)"
-    bot.reply_to(message, f"📢 Duyuru Onayı:\n\n```\n{preview_text}\n```\n"
-                          f"**{target_count}** kullanıcıya gönderilecek. Emin misin?",
+    preview = (m.text or "(medya)")[:1000]
+    bot.reply_to(m, f"📢 **Onay?**\n\n```\n{preview}\n```\n\n"
+                     f"**{target}** kullanıcıya gönderilecek.",
                  reply_markup=markup, parse_mode='Markdown')
 
-def handle_confirm_broadcast(call):
-    user_id = call.from_user.id
-    chat_id = call.message.chat.id
-    if user_id not in admin_ids:
-        bot.answer_callback_query(call.id, t(user_id, 'admin_required'), show_alert=True); return
+def cb_confirm_broadcast(call):
+    if call.from_user.id not in admin_ids: return
     try:
-        original_message = call.message.reply_to_message
-        if not original_message:
-            raise ValueError("Orijinal mesaj alınamadı.")
-
-        broadcast_text = None; broadcast_photo_id = None; broadcast_video_id = None
-        if original_message.text: broadcast_text = original_message.text
-        elif original_message.photo: broadcast_photo_id = original_message.photo[-1].file_id
-        elif original_message.video: broadcast_video_id = original_message.video.file_id
-        else: raise ValueError("Desteklenmeyen mesaj.")
-
-        bot.answer_callback_query(call.id, "Duyuru başlatılıyor...")
-        bot.edit_message_text(f"{len(active_users)} kullanıcıya duyuru gönderiliyor...",
-                              chat_id, call.message.message_id, reply_markup=None)
-        thread = threading.Thread(target=execute_broadcast, args=(
-            broadcast_text, broadcast_photo_id, broadcast_video_id,
-            original_message.caption if (broadcast_photo_id or broadcast_video_id) else None,
-            chat_id), daemon=True)
-        thread.start()
+        orig = call.message.reply_to_message
+        if not orig: raise ValueError("Orijinal yok.")
+        text = orig.text
+        bot.answer_callback_query(call.id, "Başladı...")
+        bot.edit_message_text(f"{len(active_users)} kişiye gönderiliyor...", call.message.chat.id,
+            call.message.message_id, reply_markup=None)
+        threading.Thread(target=do_broadcast, args=(text, call.message.chat.id), daemon=True).start()
     except Exception as e:
-        logger.error(f"Duyuru onay hatası: {e}", exc_info=True)
-        bot.edit_message_text(f"Duyuru hatası: {e}", chat_id, call.message.message_id, reply_markup=None)
+        bot.answer_callback_query(call.id, f"Hata: {e}", show_alert=True)
 
-def handle_cancel_broadcast(call):
-    bot.answer_callback_query(call.id, t(call.from_user.id, 'broadcast_cancelled'))
+def cb_cancel_broadcast(call):
+    bot.answer_callback_query(call.id, "İptal.")
     try: bot.delete_message(call.message.chat.id, call.message.message_id)
-    except Exception: pass
-    if call.message.reply_to_message:
-        try: bot.delete_message(call.message.chat.id, call.message.reply_to_message.message_id)
-        except Exception: pass
+    except: pass
 
-def execute_broadcast(broadcast_text, photo_id, video_id, caption, admin_chat_id):
-    sent_count = 0; failed_count = 0; blocked_count = 0
-    start_exec_time = time.time()
-    users_to_broadcast = list(active_users); total_users = len(users_to_broadcast)
-    batch_size = 25; delay_batches = 1.5
-
-    for i, user_id_bc in enumerate(users_to_broadcast):
+def do_broadcast(text, admin_chat):
+    sent = 0; failed = 0; blocked = 0
+    for i, uid in enumerate(list(active_users)):
         try:
-            if broadcast_text:
-                bot.send_message(user_id_bc, broadcast_text, parse_mode='Markdown')
-            elif photo_id:
-                bot.send_photo(user_id_bc, photo_id, caption=caption,
-                               parse_mode='Markdown' if caption else None)
-            elif video_id:
-                bot.send_video(user_id_bc, video_id, caption=caption,
-                               parse_mode='Markdown' if caption else None)
-            sent_count += 1
+            bot.send_message(uid, text, parse_mode='Markdown')
+            sent += 1
         except telebot.apihelper.ApiTelegramException as e:
-            err_desc = str(e).lower()
-            if any(s in err_desc for s in ["bot was blocked", "user is deactivated",
-                                           "chat not found", "kicked from", "restricted"]):
-                blocked_count += 1
-            elif "flood control" in err_desc or "too many requests" in err_desc:
-                retry_after = 5
-                match = re.search(r"retry after (\d+)", err_desc)
-                if match: retry_after = int(match.group(1)) + 1
-                time.sleep(retry_after)
-                try:
-                    if broadcast_text:
-                        bot.send_message(user_id_bc, broadcast_text, parse_mode='Markdown')
-                    sent_count += 1
-                except Exception: failed_count += 1
+            err = str(e).lower()
+            if any(s in err for s in ["bot was blocked", "chat not found", "deactivated"]):
+                blocked += 1
+            elif "flood" in err or "too many" in err:
+                time.sleep(5)
+                try: bot.send_message(uid, text); sent += 1
+                except: failed += 1
+            else: failed += 1
+        except: failed += 1
+        if (i+1) % 25 == 0: time.sleep(1.5)
+        else: time.sleep(0.05)
+    bot.send_message(admin_chat, f"✅ Duyuru tamam!\n📤 {sent}\n❌ {failed}\n🚫 {blocked}")
+
+def cb_subs(call):
+    bot.answer_callback_query(call.id)
+    bot.edit_message_text("💳 Abonelik Yönetimi\n\nİşlem seç:",
+        call.message.chat.id, call.message.message_id,
+        reply_markup=create_subscription_menu(call.from_user.id))
+
+def cb_admin_panel(call):
+    bot.answer_callback_query(call.id)
+    bot.edit_message_text("👑 Admin Paneli", call.message.chat.id, call.message.message_id,
+        reply_markup=create_admin_panel(call.from_user.id))
+
+def cb_add_admin(call):
+    bot.answer_callback_query(call.id)
+    msg = bot.send_message(call.message.chat.id, "Admin yapılacak ID gir.\n/cancel iptal.")
+    bot.register_next_step_handler(msg, process_add_admin)
+
+def process_add_admin(m):
+    if m.from_user.id != OWNER_ID: return
+    if m.text.lower() == '/cancel': bot.reply_to(m, "İptal."); return
+    try:
+        nid = int(m.text.strip())
+        if nid in admin_ids: bot.reply_to(m, "Zaten admin."); return
+        add_admin_db(nid)
+        bot.reply_to(m, f"✅ `{nid}` admin yapıldı.", parse_mode='Markdown')
+        try: bot.send_message(nid, "🎉 Artık adminsin!")
+        except: pass
+    except:
+        bot.reply_to(m, "Geçersiz ID.")
+
+def cb_remove_admin(call):
+    bot.answer_callback_query(call.id)
+    msg = bot.send_message(call.message.chat.id, "Silinecek admin ID gir.\n/cancel iptal.")
+    bot.register_next_step_handler(msg, process_remove_admin)
+
+def process_remove_admin(m):
+    if m.from_user.id != OWNER_ID: return
+    if m.text.lower() == '/cancel': bot.reply_to(m, "İptal."); return
+    try:
+        nid = int(m.text.strip())
+        if remove_admin_db(nid):
+            bot.reply_to(m, f"✅ `{nid}` silindi.", parse_mode='Markdown')
+        else:
+            bot.reply_to(m, f"`{nid}` silinemedi (sahip mi?).", parse_mode='Markdown')
+    except: bot.reply_to(m, "Geçersiz ID.")
+
+def cb_list_admins(call):
+    bot.answer_callback_query(call.id)
+    lst = "\n".join(f"- `{a}` {'(Sahip)' if a == OWNER_ID else ''}" for a in sorted(admin_ids))
+    bot.edit_message_text(f"👑 **Adminler:**\n\n{lst}", call.message.chat.id,
+        call.message.message_id, reply_markup=create_admin_panel(call.from_user.id), parse_mode='Markdown')
+
+def cb_add_sub(call):
+    bot.answer_callback_query(call.id)
+    msg = bot.send_message(call.message.chat.id, "Format: `ID gün`\n/cancel iptal.", parse_mode='Markdown')
+    bot.register_next_step_handler(msg, process_add_sub)
+
+def process_add_sub(m):
+    if m.from_user.id not in admin_ids: return
+    if m.text.lower() == '/cancel': bot.reply_to(m, "İptal."); return
+    try:
+        p = m.text.split()
+        if len(p) != 2: raise ValueError()
+        uid = int(p[0]); days = int(p[1])
+        cur = user_subscriptions.get(uid, {}).get('expiry')
+        start = max(datetime.now(), cur) if cur else datetime.now()
+        new_exp = start + timedelta(days=days)
+        save_subscription(uid, new_exp)
+        bot.reply_to(m, f"✅ `{uid}` +{days}g -> {new_exp:%Y-%m-%d}", parse_mode='Markdown')
+    except: bot.reply_to(m, "Geçersiz.")
+
+def cb_remove_sub(call):
+    bot.answer_callback_query(call.id)
+    msg = bot.send_message(call.message.chat.id, "Silinecek ID gir.\n/cancel iptal.")
+    bot.register_next_step_handler(msg, process_remove_sub)
+
+def process_remove_sub(m):
+    if m.from_user.id not in admin_ids: return
+    if m.text.lower() == '/cancel': bot.reply_to(m, "İptal."); return
+    try:
+        uid = int(m.text.strip())
+        if uid not in user_subscriptions: bot.reply_to(m, "Yok."); return
+        remove_subscription_db(uid)
+        bot.reply_to(m, f"✅ `{uid}` silindi.", parse_mode='Markdown')
+    except: bot.reply_to(m, "Geçersiz.")
+
+def cb_check_sub(call):
+    bot.answer_callback_query(call.id)
+    msg = bot.send_message(call.message.chat.id, "Kontrol edilecek ID gir.\n/cancel iptal.")
+    bot.register_next_step_handler(msg, process_check_sub)
+
+def process_check_sub(m):
+    if m.from_user.id not in admin_ids: return
+    if m.text.lower() == '/cancel': bot.reply_to(m, "İptal."); return
+    try:
+        uid = int(m.text.strip())
+        if uid in user_subscriptions:
+            exp = user_subscriptions[uid].get('expiry')
+            if exp and exp > datetime.now():
+                bot.reply_to(m, f"✅ `{uid}` aktif, {exp:%Y-%m-%d}", parse_mode='Markdown')
             else:
-                failed_count += 1
-        except Exception:
-            failed_count += 1
+                bot.reply_to(m, f"⚠️ Süresi dolmuş."); remove_subscription_db(uid)
+        else: bot.reply_to(m, f"Kayıt yok.")
+    except: bot.reply_to(m, "Geçersiz.")
 
-        if (i + 1) % batch_size == 0 and i < total_users - 1:
-            time.sleep(delay_batches)
-        elif i % 5 == 0:
-            time.sleep(0.2)
-
-    duration = round(time.time() - start_exec_time, 2)
-    result_msg = (f"✅ Duyuru Tamamlandı!\n\n"
-                  f"📤 Gönderilen: {sent_count}\n"
-                  f"❌ Başarısız: {failed_count}\n"
-                  f"🚫 Bloklu/Pasif: {blocked_count}\n"
-                  f"👥 Hedef: {total_users}\n"
-                  f"⏱ Süre: {duration}s")
-    logger.info(result_msg)
-    try: bot.send_message(admin_chat_id, result_msg)
-    except Exception as e: logger.error(f"Duyuru sonucu gönderilemedi: {e}")
-
-def admin_panel_callback(call):
-    bot.answer_callback_query(call.id)
+def cb_bulk_download(call, user_id):
+    bot.answer_callback_query(call.id, "ZIP hazırlanıyor...")
+    fp, count = build_bulk_zip(user_id)
+    if not fp:
+        bot.send_message(call.message.chat.id, "İndirilecek .py yok."); return
     try:
-        bot.edit_message_text("👑 Admin Paneli", call.message.chat.id,
-                              call.message.message_id, reply_markup=create_admin_panel(call.from_user.id))
-    except Exception as e: logger.error(f"Admin panel hatası: {e}")
+        with open(fp, 'rb') as f:
+            bot.send_document(call.message.chat.id, f,
+                caption=f"📥 Toplu .py indirme\n📄 {count} dosya\n📦 ZIP",
+                parse_mode='Markdown')
+    except Exception as e:
+        bot.send_message(call.message.chat.id, f"Hata: {e}")
+    finally:
+        try: os.remove(fp); shutil.rmtree(os.path.dirname(fp), ignore_errors=True)
+        except: pass
 
-def add_admin_init_callback(call):
-    bot.answer_callback_query(call.id)
-    msg = bot.send_message(call.message.chat.id, "Admin yapmak için Kullanıcı ID gir.\nİptal: /cancel")
-    bot.register_next_step_handler(msg, process_add_admin_id)
-
-def process_add_admin_id(message):
-    owner_id_check = message.from_user.id
-    if owner_id_check != OWNER_ID:
-        bot.reply_to(message, "Sadece sahip."); return
-    if message.text.lower() == '/cancel':
-        bot.reply_to(message, "İptal edildi."); return
+def cb_toggle_auto(call):
     try:
-        new_admin_id = int(message.text.strip())
-        if new_admin_id <= 0: raise ValueError()
-        if new_admin_id == OWNER_ID:
-            bot.reply_to(message, "Sahip zaten sahip."); return
-        if new_admin_id in admin_ids:
-            bot.reply_to(message, f"`{new_admin_id}` zaten admin."); return
-        add_admin_db(new_admin_id)
-        bot.reply_to(message, f"✅ `{new_admin_id}` admin yapıldı.")
-        try: bot.send_message(new_admin_id, "🎉 Artık adminsin!")
-        except Exception: pass
-    except ValueError:
-        bot.reply_to(message, "Geçersiz ID.")
-        msg = bot.send_message(message.chat.id, "ID gir veya /cancel.")
-        bot.register_next_step_handler(msg, process_add_admin_id)
-    except Exception as e: logger.error(f"Admin ekleme hatası: {e}")
-
-def remove_admin_init_callback(call):
-    bot.answer_callback_query(call.id)
-    msg = bot.send_message(call.message.chat.id, "Admin silmek için Kullanıcı ID gir.\nİptal: /cancel")
-    bot.register_next_step_handler(msg, process_remove_admin_id)
-
-def process_remove_admin_id(message):
-    owner_id_check = message.from_user.id
-    if owner_id_check != OWNER_ID:
-        bot.reply_to(message, "Sadece sahip."); return
-    if message.text.lower() == '/cancel':
-        bot.reply_to(message, "İptal edildi."); return
-    try:
-        admin_id_remove = int(message.text.strip())
-        if admin_id_remove == OWNER_ID:
-            bot.reply_to(message, "Sahip kendini silemez."); return
-        if admin_id_remove not in admin_ids:
-            bot.reply_to(message, f"`{admin_id_remove}` admin değil."); return
-        if remove_admin_db(admin_id_remove):
-            bot.reply_to(message, f"✅ `{admin_id_remove}` admin silindi.")
-            try: bot.send_message(admin_id_remove, "Artık admin değilsin.")
-            except Exception: pass
-        else:
-            bot.reply_to(message, f"`{admin_id_remove}` silinemedi.")
-    except ValueError:
-        bot.reply_to(message, "Geçersiz ID.")
-        msg = bot.send_message(message.chat.id, "ID gir veya /cancel.")
-        bot.register_next_step_handler(msg, process_remove_admin_id)
-    except Exception as e: logger.error(f"Admin silme hatası: {e}")
-
-def list_admins_callback(call):
-    bot.answer_callback_query(call.id)
-    try:
-        admin_list_str = "\n".join(f"- `{aid}` {'(Sahip)' if aid == OWNER_ID else ''}" for aid in sorted(list(admin_ids)))
-        if not admin_list_str: admin_list_str = "(Admin yok!)"
-        bot.edit_message_text(f"👑 Mevcut Adminler:\n\n{admin_list_str}", call.message.chat.id,
-                              call.message.message_id, reply_markup=create_admin_panel(call.from_user.id),
-                              parse_mode='Markdown')
-    except Exception as e: logger.error(f"Admin listesi hatası: {e}")
-
-def add_subscription_init_callback(call):
-    bot.answer_callback_query(call.id)
-    msg = bot.send_message(call.message.chat.id, "Kullanıcı ID ve gün gir (örn: `12345678 30`).\nİptal: /cancel")
-    bot.register_next_step_handler(msg, process_add_subscription_details)
-
-def process_add_subscription_details(message):
-    admin_id_check = message.from_user.id
-    if admin_id_check not in admin_ids:
-        bot.reply_to(message, t(admin_id_check, 'admin_required')); return
-    if message.text.lower() == '/cancel':
-        bot.reply_to(message, "İptal."); return
-    try:
-        parts = message.text.split()
-        if len(parts) != 2: raise ValueError("Format")
-        sub_user_id = int(parts[0].strip()); days = int(parts[1].strip())
-        if sub_user_id <= 0 or days <= 0: raise ValueError("Pozitif olmalı")
-
-        current_expiry = user_subscriptions.get(sub_user_id, {}).get('expiry')
-        start_date_new_sub = datetime.now()
-        if current_expiry and current_expiry > start_date_new_sub:
-            start_date_new_sub = current_expiry
-        new_expiry = start_date_new_sub + timedelta(days=days)
-        save_subscription(sub_user_id, new_expiry)
-
-        bot.reply_to(message, f"✅ `{sub_user_id}` için {days} günlük abonelik.\nBitiş: {new_expiry:%Y-%m-%d}")
+        _, oid, fn = call.data.split('_', 2)
+        oid = int(oid); rid = call.from_user.id
+        if not (rid == oid or rid in admin_ids):
+            bot.answer_callback_query(call.id, "İzin yok.", show_alert=True); return
+        sk = f"{oid}_{fn}"
+        auto_restart_enabled[sk] = not auto_restart_enabled.get(sk, False)
+        state = "AÇIK" if auto_restart_enabled[sk] else "KAPALI"
+        bot.answer_callback_query(call.id, f"Auto-Restart: {state}")
+        is_run = is_bot_running(oid, fn)
         try:
-            bot.send_message(sub_user_id, f"✅ Aboneliğin {days} gün uzatıldı! Bitiş: {new_expiry:%Y-%m-%d}.")
-        except Exception: pass
-    except ValueError as e:
-        bot.reply_to(message, f"Geçersiz: {e}. Format: `ID gün` veya /cancel.")
-        msg = bot.send_message(message.chat.id, "ID ve gün gir veya /cancel.")
-        bot.register_next_step_handler(msg, process_add_subscription_details)
-    except Exception as e: logger.error(f"Abonelik ekleme hatası: {e}")
+            bot.edit_message_reply_markup(call.message.chat.id, call.message.message_id,
+                reply_markup=create_control_buttons(oid, fn, is_run, rid))
+        except: pass
+    except Exception as e: logger.error(f"auto: {e}")
 
-def remove_subscription_init_callback(call):
-    bot.answer_callback_query(call.id)
-    msg = bot.send_message(call.message.chat.id, "Aboneliği silinecek Kullanıcı ID gir.\nİptal: /cancel")
-    bot.register_next_step_handler(msg, process_remove_subscription_id)
-
-def process_remove_subscription_id(message):
-    admin_id_check = message.from_user.id
-    if admin_id_check not in admin_ids:
-        bot.reply_to(message, "Yetki yok."); return
-    if message.text.lower() == '/cancel':
-        bot.reply_to(message, "İptal."); return
+def cb_file_stats(call):
     try:
-        sub_user_id_remove = int(message.text.strip())
-        if sub_user_id_remove not in user_subscriptions:
-            bot.reply_to(message, f"`{sub_user_id_remove}` abonesi yok."); return
-        remove_subscription_db(sub_user_id_remove)
-        bot.reply_to(message, f"✅ `{sub_user_id_remove}` aboneliği silindi.")
-        try: bot.send_message(sub_user_id_remove, "Aboneliğin admin tarafından kaldırıldı.")
-        except Exception: pass
-    except ValueError:
-        bot.reply_to(message, "Geçersiz ID.")
-        msg = bot.send_message(message.chat.id, "ID gir veya /cancel.")
-        bot.register_next_step_handler(msg, process_remove_subscription_id)
-    except Exception as e: logger.error(f"Abonelik silme hatası: {e}")
+        _, oid, fn = call.data.split('_', 2)
+        oid = int(oid); rid = call.from_user.id
+        if not (rid == oid or rid in admin_ids):
+            bot.answer_callback_query(call.id, "İzin yok.", show_alert=True); return
+        sk = f"{oid}_{fn}"
+        st = file_stats.get(sk, {'restarts':0, 'crashes':0})
+        is_run = is_bot_running(oid, fn)
+        up = "—"
+        if st.get('start_time') and is_run:
+            d = datetime.now() - st['start_time']
+            h, r = divmod(d.seconds, 3600); mn, s = divmod(r, 60)
+            up = f"{d.days}g {h}s {mn}d {s}sn"
+        auto = "✅" if auto_restart_enabled.get(sk, False) else "❌"
+        lock = "🔒" if file_locks.get(sk, False) else "🔓"
+        note = file_notes.get(sk, "—")
+        msg = (f"📊 **İstatistik**\n\n"
+               f"📄 `{fn}`\n👤 `{oid}`\n"
+               f"🔌 {'🟢 Çalışıyor' if is_run else '🔴 Durdu'}\n"
+               f"⏱ Uptime: `{up}`\n"
+               f"🔄 Auto: {auto} | {lock}\n"
+               f"↻ Restart: `{st.get('restarts', 0)}`\n"
+               f"💥 Crash: `{st.get('crashes', 0)}`\n"
+               f"📝 Not: {note}")
+        bot.answer_callback_query(call.id)
+        bot.send_message(call.message.chat.id, msg, parse_mode='Markdown')
+    except Exception as e: logger.error(f"stats: {e}")
 
-def check_subscription_init_callback(call):
-    bot.answer_callback_query(call.id)
-    msg = bot.send_message(call.message.chat.id, "Kontrol edilecek Kullanıcı ID gir.\nİptal: /cancel")
-    bot.register_next_step_handler(msg, process_check_subscription_id)
-
-def process_check_subscription_id(message):
-    admin_id_check = message.from_user.id
-    if admin_id_check not in admin_ids:
-        bot.reply_to(message, "Yetki yok."); return
-    if message.text.lower() == '/cancel':
-        bot.reply_to(message, "İptal."); return
+def cb_dl_log(call):
     try:
-        sub_user_id_check = int(message.text.strip())
-        if sub_user_id_check in user_subscriptions:
-            expiry_dt = user_subscriptions[sub_user_id_check].get('expiry')
-            if expiry_dt:
-                if expiry_dt > datetime.now():
-                    days_left = (expiry_dt - datetime.now()).days
-                    bot.reply_to(message, f"✅ `{sub_user_id_check}` aktif abonelik.\n"
-                                          f"Bitiş: {expiry_dt:%Y-%m-%d %H:%M:%S} ({days_left} gün)")
-                else:
-                    bot.reply_to(message, f"⚠️ `{sub_user_id_check}` abonelik süresi dolmuş.")
-                    remove_subscription_db(sub_user_id_check)
-        else:
-            bot.reply_to(message, f"`{sub_user_id_check}` abonelik kaydı yok.")
-    except ValueError:
-        bot.reply_to(message, "Geçersiz ID.")
-        msg = bot.send_message(message.chat.id, "ID gir veya /cancel.")
-        bot.register_next_step_handler(msg, process_check_subscription_id)
-    except Exception as e: logger.error(f"Abonelik kontrol hatası: {e}")
+        _, oid, fn = call.data.split('_', 2)
+        oid = int(oid); rid = call.from_user.id
+        if not (rid == oid or rid in admin_ids):
+            bot.answer_callback_query(call.id, "İzin yok.", show_alert=True); return
+        lp = os.path.join(get_user_folder(oid), f"{os.path.splitext(fn)[0]}.log")
+        if not os.path.exists(lp):
+            bot.answer_callback_query(call.id, "Log yok.", show_alert=True); return
+        with open(lp, 'rb') as f:
+            bot.send_document(call.message.chat.id, f,
+                caption=f"📜 Log: `{fn}`", parse_mode='Markdown')
+        bot.answer_callback_query(call.id, "Gönderildi.")
+    except Exception as e: logger.error(f"dl_log: {e}")
 
-# ================== KAPANIŞ ==================
-def cleanup():
-    logger.warning("Kapanış. Süreçler temizleniyor...")
-    script_keys_to_stop = list(bot_scripts.keys())
-    for key in script_keys_to_stop:
-        if key in bot_scripts:
-            try: kill_process_tree(bot_scripts[key])
-            except Exception: pass
+def cb_toggle_lock(call):
+    try:
+        _, oid, fn = call.data.split('_', 2)
+        oid = int(oid); rid = call.from_user.id
+        if not (rid == oid or rid in admin_ids):
+            bot.answer_callback_query(call.id, "İzin yok.", show_alert=True); return
+        sk = f"{oid}_{fn}"
+        file_locks[sk] = not file_locks.get(sk, False)
+        state = "🔒 KİLİTLİ" if file_locks[sk] else "🔓 AÇIK"
+        bot.answer_callback_query(call.id, state)
+        is_run = is_bot_running(oid, fn)
+        try:
+            bot.edit_message_reply_markup(call.message.chat.id, call.message.message_id,
+                reply_markup=create_control_buttons(oid, fn, is_run, rid))
+        except: pass
+    except Exception as e: logger.error(f"lock: {e}")
 
-atexit.register(cleanup)
+def cb_note(call):
+    try:
+        _, oid, fn = call.data.split('_', 2)
+        oid = int(oid); rid = call.from_user.id
+        if not (rid == oid or rid in admin_ids):
+            bot.answer_callback_query(call.id, "İzin yok.", show_alert=True); return
+        bot.answer_callback_query(call.id)
+        cur = file_notes.get(f"{oid}_{fn}", "")
+        msg = bot.send_message(call.message.chat.id,
+            f"📝 `{fn}` için not yaz:\n\n"
+            f"Mevcut: {cur or '(yok)'}\n\n"
+            f"Sil: `sil` yaz\nİptal: /cancel",
+            parse_mode='Markdown')
+        bot.register_next_step_handler(msg, process_note, oid, fn)
+    except Exception as e: logger.error(f"note: {e}")
 
-# ================== ANA ÇALIŞTIRMA ==================
+def process_note(m, oid, fn):
+    if m.from_user.id != oid and m.from_user.id not in admin_ids: return
+    if m.text and m.text.lower() == '/cancel': bot.reply_to(m, "İptal."); return
+    note = m.text.strip() if m.text else ""
+    if note.lower() == 'sil': note = ""
+    save_file_note(oid, fn, note[:500])
+    bot.reply_to(m, f"✅ Not kaydedildi." if note else "✅ Not silindi.")
+
+# ================== CLEANUP ==================
+def cleanup_all():
+    logger.warning("Kapanış - süreçler temizleniyor...")
+    for sk in list(bot_scripts.keys()):
+        if sk in bot_scripts:
+            try: kill_process_tree(bot_scripts[sk])
+            except: pass
+
+atexit.register(cleanup_all)
+
+# ================== MAIN ==================
 if __name__ == '__main__':
-    logger.info("=" * 50)
-    logger.info("🤖 Bot Başlatılıyor...")
-    logger.info(f"Sahip ID: {OWNER_ID}")
-    logger.info(f"Adminler: {admin_ids}")
-    logger.info(f"Kanal: {FORCED_CHANNEL}")
-    logger.info(f"Destek: {SUPPORT_USERNAME}")
-    logger.info("=" * 50)
+    logger.info("="*50)
+    logger.info("🚀 BOT BAŞLATILIYOR")
+    logger.info(f"👑 Sahip: {OWNER_ID}")
+    logger.info(f"🛡 Adminler: {admin_ids}")
+    logger.info(f"📢 Kanal: {FORCED_CHANNEL}")
+    logger.info("="*50)
 
     keep_alive()
 
-    logger.info("Polling başlatılıyor...")
+    # Arka plan worker'ları
+    threading.Thread(target=approval_cleanup_worker, daemon=True).start()
+    threading.Thread(target=watchdog_worker, daemon=True).start()
+    threading.Thread(target=auto_cleanup_worker, daemon=True).start()
+    threading.Thread(target=resource_monitor_worker, daemon=True).start()
+    threading.Thread(target=idle_check_worker, daemon=True).start()
+    logger.info("✅ Tüm worker'lar başlatıldı.")
+
     while True:
         try:
             bot.infinity_polling(logger_level=logging.INFO, timeout=60, long_polling_timeout=30)
         except requests.exceptions.ReadTimeout:
-            logger.warning("Polling ReadTimeout. 5s...")
             time.sleep(5)
-        except requests.exceptions.ConnectionError as ce:
-            logger.error(f"Bağlantı hatası: {ce}. 15s...")
+        except requests.exceptions.ConnectionError:
             time.sleep(15)
         except Exception as e:
-            logger.critical(f"Kritik polling hatası: {e}", exc_info=True)
-            logger.info("30s sonra yeniden...")
+            logger.critical(f"Polling: {e}", exc_info=True)
             time.sleep(30)
-        finally:
-            time.sleep(1)
