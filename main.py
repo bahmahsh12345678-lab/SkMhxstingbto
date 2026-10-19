@@ -122,7 +122,7 @@ def t(user_id, key, **kwargs):
         return text
 
 # ================== AYARLAR ==================
-TOKEN = os.environ.get('BOT_TOKEN', '8831078439:AAGk8yFfBfvPYujPfsfOuKsDh35gbs89iSY')
+TOKEN = os.environ.get('BOT_TOKEN', '8713603435:AAHSgug0Xwx4NOj47HX8UF6MzPxaFU3Mrnw')
 OWNER_ID = int(os.environ.get('OWNER_ID', '8947359034'))
 ADMIN_ID = int(os.environ.get('ADMIN_ID', '8947359034'))
 UPDATE_CHANNEL = 'https://t.me/generalotp'
